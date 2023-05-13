@@ -1,0 +1,257 @@
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
+interface SignUpProps {
+  setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
+  return (
+    <SignUpContainer>
+      <Header>
+        <CloseBtn
+          onClick={() => {
+            setUserModal(false);
+          }}
+        >
+          ✕
+        </CloseBtn>
+        <SignUpText>회원가입</SignUpText>
+        <div />
+      </Header>
+      <Greeting>
+        <span>위카</span>에 오신 것을 환영합니다.
+      </Greeting>
+      <UserTypeTitle>회원 유형</UserTypeTitle>
+      <UserTypeName>일반 회원</UserTypeName>
+      <UserType type="radio" name="userType" value="general" />
+      <UserTypeName>공급 회원</UserTypeName>
+      <UserType type="radio" name="userType" value="supply" />
+      <LastNameInput placeholder="성" />
+      <FirstNameInput placeholder="이름" />
+      <GuidanceNotes>
+        정부 발급 신분증에 표시된 이름과 일치하는지 확인하세요.
+      </GuidanceNotes>
+      <EmailInput placeholder="이메일" />
+      <GuidanceNotes>예약 확인과 영수증을 이메일로 보내드립니다.</GuidanceNotes>
+      <PasswordInput placeholder="비밀번호" />
+      <BirthDayInput placeholder="생년월일" type="date" />
+      <GuidanceNotes>
+        만 18세 이상의 성인만 회원으로 가입할 수 있습니다. 생일은 위카의 다른
+        회원에게 공개되지 않습니다.
+      </GuidanceNotes>
+      <PartingLine />
+      <AgreeBox>
+        <div>
+          <AgreeTitle>개인정보 수집 및 이용에 동의합니다.</AgreeTitle>
+          <AgreeContent>
+            위카가 수집하는 개인 정보 위카 플랫폼을 이용하는 데 필요한 정보
+            당사는 회원님이 에어비앤비 플랫폼을 이용할 때 회원님의 개인 정보를
+            수집합니다. 그렇지 않은 경우, 에어비앤비는 요청하신 서비스를
+            회원님게 제공하지 못할 수 있습니다. 이러한 정보에는 다음이
+            포함됩니다.
+          </AgreeContent>
+          <SeeMore>더보기</SeeMore>
+        </div>
+        <AgreeCheckBox type="checkbox" />
+      </AgreeBox>
+      <AgreeBox>
+        <div>
+          <AgreeTitle>마케팅 이메일 수신을 원합니다.</AgreeTitle>
+          <AgreeContent>
+            에어비앤비 회원 전용 할인, 추천 여행 정보, 마케팅 이메일, 푸시
+            알림을 보내드립니다. 계정 설정 또는 마케팅 알림에서 언제든지 수신을
+            거부할 수 있습니다.
+          </AgreeContent>
+          <SeeMore>더보기</SeeMore>
+        </div>
+        <AgreeCheckBox type="checkbox" />
+      </AgreeBox>
+      <AgreeConfirm>
+        동의 및 계속하기를 선택하여 에어비앤비 <span>서비스 약관</span>,
+        <span>결제 서비스 약관</span>, <span>위치기반 서비스 이용약관</span>,
+        <span>차별 금지 정책</span>, <span>개인정보 처리방침</span>에
+        동의합니다.
+      </AgreeConfirm>
+      <AgreeBtn>동의 및 계속하기</AgreeBtn>
+    </SignUpContainer>
+  );
+};
+
+const SignUpContainer = styled.div`
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 568px;
+  height: 730px;
+  padding: 0px 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+  z-index: 1;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 0;
+  border-bottom: 1px solid #eeeeee;
+`;
+
+const SignUpText = styled.div`
+  font-size: 19px;
+  font-weight: 600;
+`;
+
+const CloseBtn = styled.div`
+  font-size: 20px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const Greeting = styled.div`
+  margin-bottom: 20px;
+  padding: 30px 0;
+  font-size: 23px;
+  font-weight: 600;
+  color: rgb(34, 34, 34);
+
+  span {
+    color: rgb(41, 184, 255);
+  }
+`;
+
+const UserTypeTitle = styled.div`
+  margin-bottom: 10px;
+  font-weight: 600;
+`;
+
+const UserTypeName = styled.label`
+  font-size: 15px;
+`;
+
+const UserType = styled.input`
+  margin-right: 18px;
+  margin-bottom: 20px;
+`;
+
+const LastNameInput = styled.input`
+  display: block;
+  width: 100%;
+  height: 56px;
+  margin-bottom: 15px;
+  padding-left: 10px;
+  padding-bottom: 4px;
+  border: 1px solid #b0b0b0;
+  border-radius: 10px;
+  font-size: 18px;
+  outline: none;
+
+  &::placeholder {
+    font-size: 17px;
+  }
+`;
+
+const FirstNameInput = styled(LastNameInput)`
+  margin-bottom: 10px;
+`;
+
+const EmailInput = styled(LastNameInput)`
+  margin-bottom: 10px;
+`;
+
+const PasswordInput = styled(LastNameInput)`
+  margin-bottom: 40px;
+`;
+
+const BirthDayInput = styled(LastNameInput)`
+  margin-bottom: 10px;
+`;
+
+const GuidanceNotes = styled.div`
+  font-size: 12px;
+  color: #8c8b8c;
+  margin-bottom: 30px;
+`;
+
+const PartingLine = styled.hr`
+  border: none;
+  height: 1px;
+  background-color: #eeeeee;
+  margin: 30px 0;
+`;
+
+const AgreeBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #eeeeee;
+`;
+
+const AgreeTitle = styled.div`
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 600;
+`;
+
+const AgreeContent = styled.div`
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #8c8b8c;
+`;
+
+const SeeMore = styled.div`
+  font-size: 15px;
+  font-weight: 600;
+  color: #29b8ff;
+  text-decoration: underline;
+`;
+
+const AgreeCheckBox = styled.input`
+  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  margin-left: 40px;
+  margin-bottom: 15px;
+`;
+
+const AgreeConfirm = styled.div`
+  margin: 30px 0;
+  font-size: 14px;
+  color: #222222;
+  line-height: 1.2;
+  span {
+    color: #29b8ff;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+`;
+
+const AgreeBtn = styled.button`
+  width: 100%;
+  height: 48px;
+  margin-bottom: 30px;
+  border: none;
+  border-radius: 7px;
+  background-color: rgba(41, 184, 255, 0.3);
+  color: #fefefe;
+  font-size: 15px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export default SignUp;
