@@ -10,7 +10,22 @@ interface LoginProps {
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const loginValueObj = { email: '', password: '', userType: 'general' };
+
 const Login: React.FC<LoginProps> = ({ setUserModal }) => {
+  const [loginValue, setLoginValue] = useState(loginValueObj);
+  const { email, password } = loginValue;
+  const isValid = email.includes('@') && password.length >= 6;
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = event.target;
+    setLoginValue({ ...loginValue, [name]: value });
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+  }
+
   return (
     <LoginContainer>
       <Header>
@@ -27,15 +42,40 @@ const Login: React.FC<LoginProps> = ({ setUserModal }) => {
       <Greeting>
         <span>위카</span>에 오신 것을 환영합니다.
       </Greeting>
-      <UserTypeTitle>회원 유형</UserTypeTitle>
-      <UserTypeName>일반 회원</UserTypeName>
-      <UserType type="radio" name="userType" value="general" />
-      <UserTypeName>공급 회원</UserTypeName>
-      <UserType type="radio" name="userType" value="supply" />
-      <FormContainer>
-        <EmailInput placeholder="이메일" />
-        <PasswordInput placeholder="비밀번호" />
-        <ContinueBtn type="submit">계속</ContinueBtn>
+      <FormContainer onSubmit={handleSubmit}>
+        <UserTypeTitle>회원 유형</UserTypeTitle>
+        <UserTypeName>일반 회원</UserTypeName>
+        <UserType
+          type="radio"
+          name="userType"
+          value="general"
+          checked={loginValue.userType === 'general'}
+          onChange={handleChange}
+        />
+        <UserTypeName>공급 회원</UserTypeName>
+        <UserType
+          type="radio"
+          name="userType"
+          value="supply"
+          checked={loginValue.userType === 'supply'}
+          onChange={handleChange}
+        />
+        <EmailInput
+          name="email"
+          placeholder="이메일"
+          onChange={handleChange}
+          value={loginValue.email}
+        />
+        <PasswordInput
+          name="password"
+          type="password"
+          placeholder="비밀번호"
+          onChange={handleChange}
+          value={loginValue.password}
+        />
+        <LoginBtn type="submit" isValid={isValid}>
+          로그인
+        </LoginBtn>
       </FormContainer>
       <PartingLine />
       <SocialLogin>
@@ -66,7 +106,6 @@ const Login: React.FC<LoginProps> = ({ setUserModal }) => {
     </LoginContainer>
   );
 };
-
 const LoginContainer = styled.div`
   position: absolute;
   top: 15%;
@@ -101,6 +140,10 @@ const LoginText = styled.div`
 
 const CloseBtn = styled.div`
   font-size: 20px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Greeting = styled.div`
@@ -150,12 +193,13 @@ const EmailInput = styled.input`
 
 const PasswordInput = styled(EmailInput)``;
 
-const ContinueBtn = styled.button`
+const LoginBtn = styled.button<{ isValid: boolean }>`
   width: 100%;
   height: 48px;
   border: none;
   border-radius: 7px;
-  background-color: rgba(41, 184, 255, 0.3);
+  background-color: ${({ isValid }) =>
+    isValid ? 'rgb(41, 184, 255)' : 'rgba(41, 184, 255, 0.3)'};
   color: #fefefe;
   font-size: 15px;
 

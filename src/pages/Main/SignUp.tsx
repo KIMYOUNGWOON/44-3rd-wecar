@@ -1,11 +1,50 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 interface SignUpProps {
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const signUpValueObj = {
+  lastName: '',
+  firstName: '',
+  email: '',
+  password: '',
+  passwordConfirm: '',
+  phoneNumber: '',
+  birthDay: '',
+  licenseNumber: '',
+  userType: 'general',
+};
+
 const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
+  const [signUpValue, setSignUpValue] = useState(signUpValueObj);
+  const passwordChecked = signUpValue.password === signUpValue.passwordConfirm;
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = event.target;
+    setSignUpValue({ ...signUpValue, [name]: value });
+  }
+
+  function handleSubmit() {
+    axios
+      .post('127.0.0.1:3000/users/signup', {
+        email: signUpValue.email,
+        password: signUpValue.password,
+        name: signUpValue.firstName,
+        phoneNumber: signUpValue.phoneNumber,
+        driversLicenseNumber: signUpValue.licenseNumber,
+        birthday: signUpValue.birthDay,
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   return (
     <SignUpContainer>
       <Header>
@@ -22,28 +61,104 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
       <Greeting>
         <span>위카</span>에 오신 것을 환영합니다.
       </Greeting>
-      <UserTypeTitle>회원 유형</UserTypeTitle>
+      <UserTypeTitle>회원가입 유형</UserTypeTitle>
       <UserTypeName>일반 회원</UserTypeName>
-      <UserType type="radio" name="userType" value="general" />
+      <UserType
+        type="radio"
+        name="userType"
+        value="general"
+        checked={signUpValue.userType === 'general'}
+        onChange={handleChange}
+      />
       <UserTypeName>공급 회원</UserTypeName>
-      <UserType type="radio" name="userType" value="supply" />
-      <LastNameInput placeholder="성" />
-      <FirstNameInput placeholder="이름" />
+      <UserType
+        type="radio"
+        name="userType"
+        value="supply"
+        checked={signUpValue.userType === 'supply'}
+        onChange={handleChange}
+      />
+      <LastNameInput
+        name="lastName"
+        placeholder="성"
+        value={signUpValue.lastName}
+        onChange={handleChange}
+      />
+      <FirstNameInput
+        name="firstName"
+        placeholder="이름"
+        value={signUpValue.firstName}
+        onChange={handleChange}
+      />
       <GuidanceNotes>
         정부 발급 신분증에 표시된 이름과 일치하는지 확인하세요.
       </GuidanceNotes>
-      <EmailInput placeholder="이메일" />
+      <EmailInput
+        name="email"
+        value={signUpValue.email}
+        placeholder="이메일"
+        onChange={handleChange}
+      />
       <GuidanceNotes>예약 확인과 영수증을 이메일로 보내드립니다.</GuidanceNotes>
-      <PasswordInput placeholder="비밀번호" />
-      <BirthDayInput placeholder="생년월일" type="date" />
-      <GuidanceNotes>
-        만 18세 이상의 성인만 회원으로 가입할 수 있습니다. 생일은 위카의 다른
-        회원에게 공개되지 않습니다.
-      </GuidanceNotes>
+      <PasswordInput
+        type="password"
+        name="password"
+        value={signUpValue.password}
+        placeholder="비밀번호"
+        onChange={handleChange}
+      />
+      <PasswordConfirmInput
+        type="password"
+        placeholder="비밀번호 확인"
+        name="passwordConfirm"
+        value={signUpValue.passwordConfirm}
+        onChange={handleChange}
+      />
+      {signUpValue.password && signUpValue.passwordConfirm && (
+        <WarningMessage passwordchecked={passwordChecked}>
+          {passwordChecked
+            ? '비밀번호가 일치합니다.'
+            : '비밀번호가 일치하지 않습니다'}
+        </WarningMessage>
+      )}
+      <GuidanceNotes>비밀번호는 6~20자로 되어야 합니다.</GuidanceNotes>
+      <PhoneNumberInput
+        name="phoneNumber"
+        placeholder="휴대폰 번호"
+        value={signUpValue.phoneNumber}
+        onChange={handleChange}
+      />
+      <GuidanceNotes>'-'없이 숫자로만 입력 가능합니다.</GuidanceNotes>
+      {signUpValue.userType === 'general' && (
+        <BirthDayInput
+          name="birthDay"
+          placeholder="생년월일"
+          type="date"
+          value={signUpValue.birthDay}
+          onChange={handleChange}
+        />
+      )}
+      {signUpValue.userType === 'general' && (
+        <GuidanceNotes>
+          만 18세 이상의 성인만 회원으로 가입할 수 있습니다. 생일은 위카의 다른
+          회원에게 공개되지 않습니다.
+        </GuidanceNotes>
+      )}
+      {signUpValue.userType === 'general' && (
+        <LicenseNumber
+          name="licenseNumber"
+          value={signUpValue.licenseNumber}
+          placeholder="운전면허증 번호"
+          onChange={handleChange}
+        />
+      )}
+      {signUpValue.userType === 'general' && (
+        <GuidanceNotes>'-' 없이 숫자로만 입력 가능합니다.</GuidanceNotes>
+      )}
       <PartingLine />
       <AgreeBox>
         <div>
-          <AgreeTitle>개인정보 수집 및 이용에 동의합니다.</AgreeTitle>
+          <AgreeTitle>개인정보 수집 및 이용에 동의합니다. (필수)</AgreeTitle>
           <AgreeContent>
             위카가 수집하는 개인 정보 위카 플랫폼을 이용하는 데 필요한 정보
             당사는 회원님이 에어비앤비 플랫폼을 이용할 때 회원님의 개인 정보를
@@ -57,7 +172,7 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
       </AgreeBox>
       <AgreeBox>
         <div>
-          <AgreeTitle>마케팅 이메일 수신을 원합니다.</AgreeTitle>
+          <AgreeTitle>마케팅 이메일 수신을 원합니다. (선택)</AgreeTitle>
           <AgreeContent>
             에어비앤비 회원 전용 할인, 추천 여행 정보, 마케팅 이메일, 푸시
             알림을 보내드립니다. 계정 설정 또는 마케팅 알림에서 언제든지 수신을
@@ -68,12 +183,13 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
         <AgreeCheckBox type="checkbox" />
       </AgreeBox>
       <AgreeConfirm>
-        동의 및 계속하기를 선택하여 에어비앤비 <span>서비스 약관</span>,
-        <span>결제 서비스 약관</span>, <span>위치기반 서비스 이용약관</span>,
+        동의 및 계속하기를 선택하여 에어비앤비 <span>서비스 약관</span>,&nbsp;
+        <span>결제 서비스 약관</span>, <span>위치기반 서비스 이용약관</span>
+        ,&nbsp;
         <span>차별 금지 정책</span>, <span>개인정보 처리방침</span>에
         동의합니다.
       </AgreeConfirm>
-      <AgreeBtn>동의 및 계속하기</AgreeBtn>
+      <AgreeBtn onClick={handleSubmit}>가입하기</AgreeBtn>
     </SignUpContainer>
   );
 };
@@ -170,10 +286,22 @@ const EmailInput = styled(LastNameInput)`
 `;
 
 const PasswordInput = styled(LastNameInput)`
-  margin-bottom: 40px;
+  margin-bottom: 10px;
+`;
+
+const PasswordConfirmInput = styled(LastNameInput)`
+  margin-bottom: 10px;
+`;
+
+const PhoneNumberInput = styled(LastNameInput)`
+  margin-bottom: 10px;
 `;
 
 const BirthDayInput = styled(LastNameInput)`
+  margin-bottom: 10px;
+`;
+
+const LicenseNumber = styled(LastNameInput)`
   margin-bottom: 10px;
 `;
 
@@ -181,6 +309,12 @@ const GuidanceNotes = styled.div`
   font-size: 12px;
   color: #8c8b8c;
   margin-bottom: 30px;
+`;
+
+const WarningMessage = styled.div<{ passwordchecked: boolean }>`
+  font-size: 12px;
+  color: ${({ passwordchecked }) => (passwordchecked ? '#29b9ff' : '#ff2735')};
+  margin-bottom: 10px;
 `;
 
 const PartingLine = styled.hr`
@@ -201,7 +335,7 @@ const AgreeBox = styled.div`
 
 const AgreeTitle = styled.div`
   margin-bottom: 10px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 `;
 

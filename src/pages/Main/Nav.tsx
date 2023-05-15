@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { CgProfile } from 'react-icons/cg';
 import logoImg from '../../assets/mainImg/logoImg.png';
+import { useNavigate } from 'react-router';
 
 interface NavProps {
   setMenuModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,12 +15,19 @@ const Nav: React.FC<NavProps> = ({
   setUserModal,
   setModeChange,
 }) => {
+  const navigate = useNavigate();
   return (
     <NavContainer>
       <Logo src={logoImg} alt="로고이미지" />
       <SearchContainer />
       <UserContainer>
-        <CarSharing>당신의 차를 위카하세요</CarSharing>
+        <CarSharing
+          onClick={() => {
+            navigate('/seller');
+          }}
+        >
+          당신의 차를 위카하세요
+        </CarSharing>
         <UserMenu>
           <Profile
             onClick={() => {
@@ -59,6 +67,10 @@ const CarSharing = styled.div`
   border-radius: 22px;
   background-color: #f7f7f7;
   font-size: 15px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const UserMenu = styled.div``;

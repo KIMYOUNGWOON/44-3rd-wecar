@@ -1,6 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import BookingHistory from './BookingHistory/BookingHistory';
+import Header from './Header';
+import Registration from './Registration/Registration';
 
-function PaymentCompleted() {
-  return <div />;
+function SellerPage() {
+  const [pageMode, setPageMode] = useState('registration');
+
+  return (
+    <SellerPageContainer>
+      <Header pageMode={pageMode} setPageMode={setPageMode} />
+      {pageMode === 'registration' && <Registration />}
+      {pageMode === 'breakdown' && <BookingHistory />}
+    </SellerPageContainer>
+  );
 }
-export default PaymentCompleted;
+
+const SellerPageContainer = styled.div``;
+
+export default SellerPage;

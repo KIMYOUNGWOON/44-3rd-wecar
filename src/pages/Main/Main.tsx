@@ -5,10 +5,10 @@ import MenuModal from './MenuModal';
 import Nav from './Nav';
 import SignUp from './SignUp';
 
-function Main() {
+const Main: React.FC = () => {
   const [menuModal, setMenuModal] = useState<boolean>(false);
   const [userModal, setUserModal] = useState<boolean>(false);
-  const [modeChange, setModeChange] = useState<string>('signin');
+  const [modeChange, setModeChange] = useState<string>('');
 
   return (
     <MainContainer>
@@ -32,7 +32,7 @@ function Main() {
         />
       )}
       {userModal &&
-        (modeChange === 'signin' ? (
+        (modeChange === 'signIn' ? (
           <Login setUserModal={setUserModal} />
         ) : (
           <SignUp setUserModal={setUserModal} />
@@ -46,7 +46,7 @@ function Main() {
       )}
     </MainContainer>
   );
-}
+};
 
 const MainContainer = styled.div`
   position: relative;

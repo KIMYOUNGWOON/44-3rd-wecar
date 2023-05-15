@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 interface MenuModalProps {
@@ -12,13 +13,14 @@ const MenuModal: React.FC<MenuModalProps> = ({
   setUserModal,
   setModeChange,
 }) => {
+  const navigate = useNavigate();
   return (
     <ModalContainer>
       <SingIn
         onClick={() => {
           setMenuModal(false);
           setUserModal(true);
-          setModeChange('signin');
+          setModeChange('signIn');
         }}
       >
         로그인
@@ -27,12 +29,16 @@ const MenuModal: React.FC<MenuModalProps> = ({
         onClick={() => {
           setMenuModal(false);
           setUserModal(true);
-          setModeChange('signup');
+          setModeChange('signUp');
         }}
       >
         회원가입
       </SignUp>
-      <CarSharing>
+      <CarSharing
+        onClick={() => {
+          navigate('/seller');
+        }}
+      >
         당신의 차를 <span>위카</span>하세요
       </CarSharing>
     </ModalContainer>
