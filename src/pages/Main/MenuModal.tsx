@@ -6,34 +6,61 @@ interface MenuModalProps {
   setMenuModal: React.Dispatch<React.SetStateAction<boolean>>;
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
   setModeChange: React.Dispatch<React.SetStateAction<string>>;
+  loginMode: boolean;
+  setLoginMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MenuModal: React.FC<MenuModalProps> = ({
   setMenuModal,
   setUserModal,
   setModeChange,
+  loginMode,
+  setLoginMode,
 }) => {
   const navigate = useNavigate();
   return (
     <ModalContainer>
-      <SingIn
-        onClick={() => {
-          setMenuModal(false);
-          setUserModal(true);
-          setModeChange('signIn');
-        }}
-      >
-        로그인
-      </SingIn>
-      <SignUp
-        onClick={() => {
-          setMenuModal(false);
-          setUserModal(true);
-          setModeChange('signUp');
-        }}
-      >
-        회원가입
-      </SignUp>
+      {loginMode && (
+        <>
+          <Account>계정</Account>
+          <WishList>위시리스트</WishList>
+          <Notice>
+            알림 <span>•</span>
+          </Notice>
+          <LogOut
+            onClick={() => {
+              setMenuModal(false);
+              setLoginMode(false);
+            }}
+          >
+            로그아웃
+          </LogOut>
+        </>
+      )}
+      {!loginMode && (
+        <>
+          <SingIn
+            onClick={() => {
+              setMenuModal(false);
+              setUserModal(true);
+              setModeChange('signIn');
+              window.document.body.style.overflowY = 'hidden';
+            }}
+          >
+            로그인
+          </SingIn>
+          <SignUp
+            onClick={() => {
+              setMenuModal(false);
+              setUserModal(true);
+              setModeChange('signUp');
+              window.document.body.style.overflowY = 'hidden';
+            }}
+          >
+            회원가입
+          </SignUp>
+        </>
+      )}
       <CarSharing
         onClick={() => {
           navigate('/seller');
@@ -68,6 +95,18 @@ const SingIn = styled.div`
 `;
 
 const SignUp = styled(SingIn)``;
+
+const Account = styled(SingIn)``;
+
+const WishList = styled(SingIn)``;
+
+const Notice = styled(SingIn)`
+  span {
+    color: #fa545c;
+  }
+`;
+
+const LogOut = styled(SingIn)``;
 
 const CarSharing = styled.div`
   margin-top: 5px;

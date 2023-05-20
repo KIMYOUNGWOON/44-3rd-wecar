@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import BookingHistory from './BookingHistory/BookingHistory';
 import Header from './Header';
 import Registration from './Registration/Registration';
+import RegistrationInfo from './RegistrationInfo/RegistrationInfo';
 
 function SellerPage() {
   const [pageMode, setPageMode] = useState('registration');
 
   return (
     <SellerPageContainer>
-      <Header pageMode={pageMode} setPageMode={setPageMode} />
+      <Header pagemode={pageMode} setPageMode={setPageMode} />
       {pageMode === 'registration' && <Registration />}
-      {pageMode === 'breakdown' && <BookingHistory />}
+      {pageMode === 'breakdown' && <RegistrationInfo />}
     </SellerPageContainer>
   );
 }

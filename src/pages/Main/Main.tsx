@@ -1,56 +1,101 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import FilterBar from './FilterBar/FilterBar';
+import FilterModal from './FilterBar/FilterModal';
+import Footer from './Footer';
 import Login from './Login';
 import MenuModal from './MenuModal';
 import Nav from './Nav';
+import ProductList from './ProductList';
 import SignUp from './SignUp';
 
 const Main: React.FC = () => {
   const [menuModal, setMenuModal] = useState<boolean>(false);
   const [userModal, setUserModal] = useState<boolean>(false);
   const [modeChange, setModeChange] = useState<string>('');
+  const [loginMode, setLoginMode] = useState<boolean>(false);
+  const [searchMode, setSearchMode] = useState(false);
+  const [searchModal, setSearchModal] = useState(false);
+  const [filterModal, setFilterModal] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setSearchMode(false);
+      setSearchModal(false);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <MainContainer>
       <Nav
         setMenuModal={setMenuModal}
-        setUserModal={setUserModal}
-        setModeChange={setModeChange}
+        loginMode={loginMode}
+        searchMode={searchMode}
+        setSearchMode={setSearchMode}
+        searchModal={searchModal}
+        setSearchModal={setSearchModal}
       />
+      {menuModal && (
+        <MenuBlackModal
+          onClick={() => {
+            setMenuModal(false);
+            window.document.body.style.overflowY = 'scroll';
+          }}
+        />
+      )}
+      {userModal && (
+        <UserBlackModal
+          onClick={() => {
+            setUserModal(false);
+            window.document.body.style.overflowY = 'scroll';
+          }}
+        />
+      )}
       {menuModal && (
         <MenuModal
           setMenuModal={setMenuModal}
           setUserModal={setUserModal}
           setModeChange={setModeChange}
-        />
-      )}
-      {menuModal && (
-        <MenuBlackModal
-          onClick={() => {
-            setMenuModal(prev => !prev);
-          }}
+          loginMode={loginMode}
+          setLoginMode={setLoginMode}
         />
       )}
       {userModal &&
         (modeChange === 'signIn' ? (
-          <Login setUserModal={setUserModal} />
+          <Login setUserModal={setUserModal} setLoginMode={setLoginMode} />
         ) : (
           <SignUp setUserModal={setUserModal} />
         ))}
-      {userModal && (
-        <UserBlackModal
+      {searchMode && (
+        <SearchBlackModal
           onClick={() => {
-            setUserModal(false);
+            setSearchMode(prev => !prev);
+            setSearchModal(false);
           }}
         />
       )}
+      {filterModal && (
+        <FilterBlackModal
+          onClick={() => {
+            setFilterModal(false);
+            window.document.body.style.overflowY = 'scroll';
+          }}
+        />
+      )}
+      <FilterModal filterModal={filterModal} />
+      <FilterBar setFilterModal={setFilterModal} />
+      <ProductList />
+      <Footer />
     </MainContainer>
   );
 };
 
 const MainContainer = styled.div`
   position: relative;
-  height: 100vh;
 `;
 
 const MenuBlackModal = styled.div`
@@ -59,9 +104,23 @@ const MenuBlackModal = styled.div`
   background-color: rgba(0, 0, 0, 0.2);
 `;
 
+const SearchBlackModal = styled(MenuBlackModal)`
+  position: absolute;
+  inset: 0;
+  transform: translateY(230px);
+  background-color: rgba(0, 0, 0, 0.2);
+`;
+
 const UserBlackModal = styled.div`
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
 `;
+
+const FilterBlackModal = styled(MenuBlackModal)`
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+`;
+
 export default Main;

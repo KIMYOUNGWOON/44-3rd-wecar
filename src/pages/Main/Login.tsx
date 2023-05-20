@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import { SiNaver } from 'react-icons/si';
 import { SiKakao } from 'react-icons/si';
@@ -8,12 +9,19 @@ import { FcGoogle } from 'react-icons/fc';
 
 interface LoginProps {
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoginMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const loginValueObj = { email: '', password: '', userType: 'general' };
+interface User {
+  email: string;
+  password: string;
+  userType: 'general' | 'supply';
+}
 
-const Login: React.FC<LoginProps> = ({ setUserModal }) => {
-  const [loginValue, setLoginValue] = useState(loginValueObj);
+const loginValueObj: User = { email: '', password: '', userType: 'general' };
+
+const Login: React.FC<LoginProps> = ({ setUserModal, setLoginMode }) => {
+  const [loginValue, setLoginValue] = useState<User>(loginValueObj);
   const { email, password } = loginValue;
   const isValid = email.includes('@') && password.length >= 6;
 
@@ -24,6 +32,25 @@ const Login: React.FC<LoginProps> = ({ setUserModal }) => {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    axios
+      .post('http://192.168.0.28:3000/auth/signin', {
+        email: loginValue.email,
+        password: loginValue.password,
+      })
+      .then(response => {
+        if (response.status === 201) {
+          const { accessToken, refreshToken } = response.data;
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          setUserModal(false);
+          setLoginMode(true);
+          alert('로그인에 성공했습니다.');
+        }
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   return (
@@ -32,6 +59,7 @@ const Login: React.FC<LoginProps> = ({ setUserModal }) => {
         <CloseBtn
           onClick={() => {
             setUserModal(false);
+            window.document.body.style.overflowY = 'scroll';
           }}
         >
           ✕
@@ -65,6 +93,7 @@ const Login: React.FC<LoginProps> = ({ setUserModal }) => {
           placeholder="이메일"
           onChange={handleChange}
           value={loginValue.email}
+          autoComplete="username"
         />
         <PasswordInput
           name="password"
@@ -72,8 +101,9 @@ const Login: React.FC<LoginProps> = ({ setUserModal }) => {
           placeholder="비밀번호"
           onChange={handleChange}
           value={loginValue.password}
+          autoComplete="new-password"
         />
-        <LoginBtn type="submit" isValid={isValid}>
+        <LoginBtn type="submit" isvalid={isValid.toString()}>
           로그인
         </LoginBtn>
       </FormContainer>
@@ -108,7 +138,7 @@ const Login: React.FC<LoginProps> = ({ setUserModal }) => {
 };
 const LoginContainer = styled.div`
   position: absolute;
-  top: 15%;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   width: 568px;
@@ -193,13 +223,13 @@ const EmailInput = styled.input`
 
 const PasswordInput = styled(EmailInput)``;
 
-const LoginBtn = styled.button<{ isValid: boolean }>`
+const LoginBtn = styled.button<{ isvalid: string }>`
   width: 100%;
   height: 48px;
   border: none;
   border-radius: 7px;
-  background-color: ${({ isValid }) =>
-    isValid ? 'rgb(41, 184, 255)' : 'rgba(41, 184, 255, 0.3)'};
+  background-color: ${({ isvalid }) =>
+    isvalid === 'true' ? 'rgb(41, 184, 255)' : 'rgba(41, 184, 255, 0.3)'};
   color: #fefefe;
   font-size: 15px;
 

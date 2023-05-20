@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import logoImg from '../../assets/mainImg/logoImg.png';
 
 interface HeaderProps {
-  pageMode: string;
+  pagemode: string;
   setPageMode: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Header: React.FC<HeaderProps> = ({ pageMode, setPageMode }) => {
+const Header: React.FC<HeaderProps> = ({ pagemode, setPageMode }) => {
   const navigate = useNavigate();
   return (
     <HeaderContainer>
@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ pageMode, setPageMode }) => {
       >
         예약 내역
       </BreakDown>
-      <UnderLine pageMode={pageMode} />
+      <UnderLine pagemode={pagemode} />
     </HeaderContainer>
   );
 };
@@ -71,12 +71,12 @@ const BreakDown = styled(Register)`
   border-left: 1px solid #222222;
 `;
 
-const UnderLine = styled.div<{ pageMode: string }>`
+const UnderLine = styled.div<{ pagemode: string }>`
   position: absolute;
   width: 70px;
   border: 2px solid #29b9ff;
   top: 60px;
-  left: ${({ pageMode }) => (pageMode === 'registration' ? 295 : 396)}px;
+  left: ${({ pagemode }) => (pagemode === 'registration' ? 295 : 396)}px;
 `;
 
 export default Header;

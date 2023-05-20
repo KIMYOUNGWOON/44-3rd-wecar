@@ -1,20 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { HOST_ADDRESS } from 'HostAddress';
 import styled from 'styled-components';
 import CarImage from './CarImage';
 import EnterAddress from './EnterAddress';
 import OfferPeriod from './OfferPeriod';
 
+const initialValue = {
+  brand: '',
+  carModel: '',
+  carNumber: '',
+  useCharge: '',
+  carType: '',
+  carSize: '',
+  boardingCapacity: '',
+  fuelType: '',
+  carImage: '',
+  shareTerm: '',
+  address: '',
+};
+
 function Registration() {
+  const [brandData, setBrandData] = useState(initialValue);
+  const [inputValue, setInputValue] = useState(initialValue);
+
+  function handleChange(event: React.ChangeEvent<any>) {
+    const { name, value } = event.target;
+    setInputValue({ ...inputValue, [name]: value });
+  }
+
+  // useEffect(() => {
+  //   axios.get(`${HOST_ADDRESS}/cars/brands`).then(response => {
+  //     console.log(response);
+  //   });
+  // });
+
   return (
     <RegistrationContainer>
       <TitleBox>
         브랜드 <span>•</span>
       </TitleBox>
       <SelectContainer>
-        <SelectBox>
+        <SelectBox
+          name="brand"
+          value={inputValue.brand}
+          onChange={handleChange}
+        >
           <SelectList>브랜드 선택</SelectList>
           {CAR_BRAND.map((brand, i) => {
-            return <SelectList>{brand}</SelectList>;
+            return <SelectList key={i}>{brand}</SelectList>;
           })}
         </SelectBox>
         <GuidanceNotes>정확한 브랜드명을 작성해주세요.</GuidanceNotes>
@@ -27,10 +61,14 @@ function Registration() {
         차량 모델 <span>•</span>
       </TitleBox>
       <SelectContainer>
-        <SelectBox>
+        <SelectBox
+          name="carModel"
+          value={inputValue.carModel}
+          onChange={handleChange}
+        >
           <SelectList>차량 모델 선택</SelectList>
           {CAR_BRAND.map((brand, i) => {
-            return <SelectList>{brand}</SelectList>;
+            return <SelectList key={i}>{brand}</SelectList>;
           })}
         </SelectBox>
         <GuidanceNotes>
@@ -46,7 +84,12 @@ function Registration() {
         차량 번호 <span>•</span>
       </TitleBox>
       <CarNumberBox>
-        <CarNumberInput placeholder="OOO가OOOO" />
+        <CarNumberInput
+          name="carNumber"
+          placeholder="OOO가OOOO"
+          // value={inputValue.carNumber}
+          onChange={handleChange}
+        />
         <GuidanceNotes>
           본인 명의의 차량만 등록 가능하며, 타인명의 / 리스 / 렌트 등의 차량은
           등록이 불가합니다.
@@ -58,10 +101,14 @@ function Registration() {
       </TitleBox>
       <ChargeInputBox>
         <ChargeText>
-          시간당 이용 요금 <span>•</span>
+          일일 이용 요금 <span>•</span>
         </ChargeText>
         <div>
-          <ChargeInput placeholder="숫자만 입력" />
+          <ChargeInput
+            name="useCharge"
+            placeholder="숫자만 입력"
+            onChange={handleChange}
+          />
           <WonText>원</WonText>
           <GuidanceNotes>
             매출연동수수료 2%가 결제수수료와 별도로 과금됩니다.
@@ -79,50 +126,70 @@ function Registration() {
         <AppearanceBox>
           <BoxTitle>외형</BoxTitle>
           <RadioInputContainer>
-            <RadioInput type="radio" />
+            <RadioInput
+              name="carType"
+              type="radio"
+              value="경차"
+              onChange={handleChange}
+            />
             <Label>경차</Label>
-            <RadioInput type="radio" />
-            <Label>세단</Label>
-            <RadioInput type="radio" />
+            <RadioInput
+              name="carType"
+              type="radio"
+              value="승용차"
+              onChange={handleChange}
+            />
+            <Label>승용차</Label>
+            <RadioInput
+              name="carType"
+              type="radio"
+              value="SUV"
+              onChange={handleChange}
+            />
             <Label>SUV</Label>
-            <RadioInput type="radio" />
+            <RadioInput
+              name="carType"
+              type="radio"
+              value="승합차"
+              onChange={handleChange}
+            />
             <Label>승합차</Label>
           </RadioInputContainer>
         </AppearanceBox>
         <CarTypeBox>
           <BoxTitle>차종</BoxTitle>
           <RadioInputContainer>
-            <RadioInput type="radio" />
+            <RadioInput name="carSize" type="radio" value="소형" />
             <Label>소형</Label>
-            <RadioInput type="radio" />
+            <RadioInput name="carSize" type="radio" value="중형" />
             <Label>중형</Label>
-            <RadioInput type="radio" />
+            <RadioInput name="carSize" type="radio" value="대형" />
             <Label>대형</Label>
           </RadioInputContainer>
         </CarTypeBox>
         <PeopleNumberBox>
           <BoxTitle>승차 정원</BoxTitle>
           <RadioInputContainer>
-            <RadioInput type="radio" />
+            <RadioInput name="boardingCapacity" type="radio" value="4인승" />
             <Label>4인승</Label>
-            <RadioInput type="radio" />
+            <RadioInput name="boardingCapacity" type="radio" value="5인승" />
             <Label>5인승</Label>
-            <RadioInput type="radio" />
+            <RadioInput name="boardingCapacity" type="radio" value="7인승" />
             <Label>7인승</Label>
-            <RadioInput type="radio" />
+            <RadioInput name="boardingCapacity" type="radio" value="9인승" />
             <Label>9인승</Label>
           </RadioInputContainer>
         </PeopleNumberBox>
         <FuelTypeBox>
           <BoxTitle>연료 유형</BoxTitle>
           <RadioInputContainer>
-            <RadioInput name="fuelType" type="radio" />
+            <RadioInput name="fuelType" type="radio" value="가솔린" />
             <Label>가솔린</Label>
-            <RadioInput name="fuelType" type="radio" />
+            <RadioInput name="fuelType" type="radio" value="디젤" />
             <Label>디젤</Label>
-            <RadioInput name="fuelType" type="radio" />
+            <RadioInput name="fuelType" type="radio" value="하이브리드" />
             <Label>하이브리드</Label>
-            <RadioInput name="fuelType" type="radio" />
+            <RadioInput name="fuelType" type="radio" value="EV" />
             <Label>EV</Label>
           </RadioInputContainer>
         </FuelTypeBox>
@@ -136,7 +203,7 @@ function Registration() {
           {CAR_OPTION.map((option, i) => {
             return (
               <CheckBoxForm key={i}>
-                <CheckBox type="checkbox" />
+                <CheckBox name="carOption" type="checkbox" />
                 <Label>{option}</Label>
               </CheckBoxForm>
             );
@@ -227,7 +294,7 @@ const ChargeText = styled.div`
 `;
 
 const ChargeInput = styled(CarNumberInput)`
-  width: 170px;
+  width: 183px;
 `;
 
 const WonText = styled.div`

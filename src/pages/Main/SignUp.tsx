@@ -18,24 +18,40 @@ const signUpValueObj = {
   userType: 'general',
 };
 
+const isChecked = {
+  mandatoryCheck: false,
+  choiceCheck: false,
+};
+
 const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
   const [signUpValue, setSignUpValue] = useState(signUpValueObj);
+  const [checkedValue, setCheckedValue] = useState(isChecked);
   const passwordChecked = signUpValue.password === signUpValue.passwordConfirm;
+  const fullName = signUpValue.lastName + signUpValue.firstName;
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setSignUpValue({ ...signUpValue, [name]: value });
   }
 
+  function handleCheckBox(event: React.ChangeEvent<HTMLInputElement>) {
+    const { name, checked } = event.target;
+    setCheckedValue({ ...checkedValue, [name]: checked });
+  }
+
+  console.log(signUpValue);
+  console.log(checkedValue);
+
   function handleSubmit() {
     axios
-      .post('127.0.0.1:3000/users/signup', {
+      .post('http://192.168.0.28:3000/users/signup', {
         email: signUpValue.email,
         password: signUpValue.password,
-        name: signUpValue.firstName,
+        name: fullName,
         phoneNumber: signUpValue.phoneNumber,
         driversLicenseNumber: signUpValue.licenseNumber,
         birthday: signUpValue.birthDay,
+        marketingAgreement: checkedValue.choiceCheck,
       })
       .then(response => {
         console.log(response);
@@ -51,6 +67,7 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
         <CloseBtn
           onClick={() => {
             setUserModal(false);
+            window.document.body.style.overflowY = 'scroll';
           }}
         >
           ✕
@@ -78,83 +95,92 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
         checked={signUpValue.userType === 'supply'}
         onChange={handleChange}
       />
-      <LastNameInput
-        name="lastName"
-        placeholder="성"
-        value={signUpValue.lastName}
-        onChange={handleChange}
-      />
-      <FirstNameInput
-        name="firstName"
-        placeholder="이름"
-        value={signUpValue.firstName}
-        onChange={handleChange}
-      />
-      <GuidanceNotes>
-        정부 발급 신분증에 표시된 이름과 일치하는지 확인하세요.
-      </GuidanceNotes>
-      <EmailInput
-        name="email"
-        value={signUpValue.email}
-        placeholder="이메일"
-        onChange={handleChange}
-      />
-      <GuidanceNotes>예약 확인과 영수증을 이메일로 보내드립니다.</GuidanceNotes>
-      <PasswordInput
-        type="password"
-        name="password"
-        value={signUpValue.password}
-        placeholder="비밀번호"
-        onChange={handleChange}
-      />
-      <PasswordConfirmInput
-        type="password"
-        placeholder="비밀번호 확인"
-        name="passwordConfirm"
-        value={signUpValue.passwordConfirm}
-        onChange={handleChange}
-      />
-      {signUpValue.password && signUpValue.passwordConfirm && (
-        <WarningMessage passwordchecked={passwordChecked}>
-          {passwordChecked
-            ? '비밀번호가 일치합니다.'
-            : '비밀번호가 일치하지 않습니다'}
-        </WarningMessage>
-      )}
-      <GuidanceNotes>비밀번호는 6~20자로 되어야 합니다.</GuidanceNotes>
-      <PhoneNumberInput
-        name="phoneNumber"
-        placeholder="휴대폰 번호"
-        value={signUpValue.phoneNumber}
-        onChange={handleChange}
-      />
-      <GuidanceNotes>'-'없이 숫자로만 입력 가능합니다.</GuidanceNotes>
-      {signUpValue.userType === 'general' && (
-        <BirthDayInput
-          name="birthDay"
-          placeholder="생년월일"
-          type="date"
-          value={signUpValue.birthDay}
+      <form>
+        <LastNameInput
+          name="lastName"
+          placeholder="성"
+          value={signUpValue.lastName}
           onChange={handleChange}
         />
-      )}
-      {signUpValue.userType === 'general' && (
+        <FirstNameInput
+          name="firstName"
+          placeholder="이름"
+          value={signUpValue.firstName}
+          onChange={handleChange}
+        />
         <GuidanceNotes>
-          만 18세 이상의 성인만 회원으로 가입할 수 있습니다. 생일은 위카의 다른
-          회원에게 공개되지 않습니다.
+          정부 발급 신분증에 표시된 이름과 일치하는지 확인하세요.
         </GuidanceNotes>
-      )}
-      {signUpValue.userType === 'general' && (
-        <LicenseNumber
-          name="licenseNumber"
-          value={signUpValue.licenseNumber}
-          placeholder="운전면허증 번호"
+        <EmailInput
+          name="email"
+          value={signUpValue.email}
+          placeholder="이메일"
+          onChange={handleChange}
+          autoComplete="username"
+        />
+        <GuidanceNotes>
+          예약 확인과 영수증을 이메일로 보내드립니다.
+        </GuidanceNotes>
+        <PasswordInput
+          type="password"
+          name="password"
+          value={signUpValue.password}
+          placeholder="비밀번호"
+          onChange={handleChange}
+          autoComplete="new-password"
+        />
+        <PasswordConfirmInput
+          type="password"
+          placeholder="비밀번호 확인"
+          name="passwordConfirm"
+          value={signUpValue.passwordConfirm}
+          onChange={handleChange}
+          autoComplete="new-password"
+        />
+        {signUpValue.password && signUpValue.passwordConfirm && (
+          <WarningMessage passwordchecked={passwordChecked}>
+            {passwordChecked
+              ? '비밀번호가 일치합니다.'
+              : '비밀번호가 일치하지 않습니다'}
+          </WarningMessage>
+        )}
+        <GuidanceNotes>비밀번호는 6~20자로 되어야 합니다.</GuidanceNotes>
+        <PhoneNumberInput
+          name="phoneNumber"
+          placeholder="휴대폰 번호"
+          value={signUpValue.phoneNumber}
           onChange={handleChange}
         />
-      )}
-      {signUpValue.userType === 'general' && (
-        <GuidanceNotes>'-' 없이 숫자로만 입력 가능합니다.</GuidanceNotes>
-      )}
+        <GuidanceNotes>010-0000-0000 형식으로 입력 가능합니다.</GuidanceNotes>
+        {signUpValue.userType === 'general' && (
+          <BirthDayInput
+            name="birthDay"
+            placeholder="생년월일"
+            type="date"
+            value={signUpValue.birthDay}
+            onChange={handleChange}
+          />
+        )}
+        {signUpValue.userType === 'general' && (
+          <GuidanceNotes>
+            만 18세 이상의 성인만 회원으로 가입할 수 있습니다. 생일은 위카의
+            다른 회원에게 공개되지 않습니다.
+          </GuidanceNotes>
+        )}
+        {signUpValue.userType === 'general' && (
+          <LicenseNumber
+            name="licenseNumber"
+            value={signUpValue.licenseNumber}
+            placeholder="운전면허증 번호"
+            onChange={handleChange}
+          />
+        )}
+        {signUpValue.userType === 'general' && (
+          <GuidanceNotes>
+            00-00-000000-00 형식으로 입력 가능합니다.
+          </GuidanceNotes>
+        )}
+      </form>
       <PartingLine />
       <AgreeBox>
         <div>
@@ -168,7 +194,12 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
           </AgreeContent>
           <SeeMore>더보기</SeeMore>
         </div>
-        <AgreeCheckBox type="checkbox" />
+        <AgreeCheckBox
+          type="checkbox"
+          name="mandatoryCheck"
+          checked={checkedValue.mandatoryCheck}
+          onChange={handleCheckBox}
+        />
       </AgreeBox>
       <AgreeBox>
         <div>
@@ -180,7 +211,12 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
           </AgreeContent>
           <SeeMore>더보기</SeeMore>
         </div>
-        <AgreeCheckBox type="checkbox" />
+        <AgreeCheckBox
+          type="checkbox"
+          name="choiceCheck"
+          checked={checkedValue.choiceCheck}
+          onChange={handleCheckBox}
+        />
       </AgreeBox>
       <AgreeConfirm>
         동의 및 계속하기를 선택하여 에어비앤비 <span>서비스 약관</span>,&nbsp;
@@ -189,14 +225,19 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
         <span>차별 금지 정책</span>, <span>개인정보 처리방침</span>에
         동의합니다.
       </AgreeConfirm>
-      <AgreeBtn onClick={handleSubmit}>가입하기</AgreeBtn>
+      <AgreeBtn
+        enable={checkedValue.mandatoryCheck.toString()}
+        onClick={handleSubmit}
+      >
+        가입하기
+      </AgreeBtn>
     </SignUpContainer>
   );
 };
 
 const SignUpContainer = styled.div`
   position: absolute;
-  top: 15%;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   width: 568px;
@@ -373,13 +414,14 @@ const AgreeConfirm = styled.div`
   }
 `;
 
-const AgreeBtn = styled.button`
+const AgreeBtn = styled.button<{ enable: string }>`
   width: 100%;
   height: 48px;
   margin-bottom: 30px;
   border: none;
   border-radius: 7px;
-  background-color: rgba(41, 184, 255, 0.3);
+  background-color: ${({ enable }) =>
+    enable === 'true' ? 'rgb(41, 184, 255)' : 'rgba(41, 184, 255, 0.3)'};
   color: #fefefe;
   font-size: 15px;
 

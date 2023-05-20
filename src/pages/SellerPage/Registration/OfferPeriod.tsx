@@ -35,9 +35,9 @@ const OfferPeriod: React.FC = () => {
       </ContentBox>
       {btnChange && (
         <InputContainer>
-          <DateInput type="datetime-local" />
+          <DateInput type="date" />
           <WaveText>~</WaveText>
-          <DateInput type="datetime-local" />
+          <DateInput type="date" />
         </InputContainer>
       )}
     </OfferPeriodContainer>
