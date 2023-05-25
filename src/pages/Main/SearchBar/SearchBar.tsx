@@ -11,6 +11,7 @@ interface SearchBarProps {
   setSearchMode: React.Dispatch<React.SetStateAction<boolean>>;
   searchModal: boolean;
   setSearchModal: React.Dispatch<React.SetStateAction<boolean>>;
+  tokenChecked: null | string;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -18,6 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   setSearchMode,
   searchModal,
   setSearchModal,
+  tokenChecked,
 }) => {
   const [modalChange, setModalChange] = useState('region');
   const [regionValue, setRegionValue] = useState('지역 검색');
@@ -69,7 +71,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <DivTag>
+    <SearchContainer tokenchecked={tokenChecked}>
       {searchModal && (
         <SearchModal
           modalChange={modalChange}
@@ -99,13 +101,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
           />
         )}
       </SearchBarContainer>
-    </DivTag>
+    </SearchContainer>
   );
 };
-const DivTag = styled.div`
+const SearchContainer = styled.div<{ tokenchecked: null | string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-left: ${({ tokenchecked }) => (tokenchecked ? 75 : 0)}px;
 `;
 
 const SearchBarContainer = styled.div<{ searchmode: string }>`

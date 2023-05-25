@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from './Header';
 import Registration from './Registration/Registration';
-import RegistrationInfo from './RegistrationInfo/RegistrationInfo';
+import RegistrationInfo from './HostPage/HostPage';
 
-function SellerPage() {
+function AdminPage() {
   const [pageMode, setPageMode] = useState('registration');
 
   return (
     <SellerPageContainer>
       <Header pagemode={pageMode} setPageMode={setPageMode} />
-      {pageMode === 'registration' && <Registration />}
+      {pageMode === 'registration' && (
+        <Registration setPageMode={setPageMode} />
+      )}
       {pageMode === 'breakdown' && <RegistrationInfo />}
     </SellerPageContainer>
   );
@@ -18,4 +20,4 @@ function SellerPage() {
 
 const SellerPageContainer = styled.div``;
 
-export default SellerPage;
+export default AdminPage;

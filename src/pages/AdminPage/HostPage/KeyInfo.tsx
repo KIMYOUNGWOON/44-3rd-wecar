@@ -1,28 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function KeyInfo() {
+interface KeyInfoProps {
+  carData: any;
+}
+
+const KeyInfo: React.FC<KeyInfoProps> = ({ carData }) => {
   return (
     <KeyInfoContainer>
       <Appearance>
-        <DateKey>외형</DateKey>
-        <DateValue>세단</DateValue>
+        <Key>외형</Key>
+        <Value>{carData.carModel.carType.name}</Value>
       </Appearance>
       <ReleaseDate>
-        <DateKey>차종</DateKey>
-        <DateValue>중형</DateValue>
+        <Key>차종</Key>
+        <Value>{carData.carModel.engineSize.name}</Value>
       </ReleaseDate>
       <Color>
-        <DateKey>승차 정원</DateKey>
-        <DateValue>4인승</DateValue>
+        <Key>승차 정원</Key>
+        <Value>{carData.carModel.capacity + '인승'}</Value>
       </Color>
       <SellingPrice>
-        <DateKey>연류 유형</DateKey>
-        <DateValue>하이브리드</DateValue>
+        <Key>연류 유형</Key>
+        <Value>{carData.fuelType.name}</Value>
       </SellingPrice>
     </KeyInfoContainer>
   );
-}
+};
 
 const KeyInfoContainer = styled.div`
   display: flex;
@@ -46,12 +50,12 @@ const Color = styled(ReleaseDate)``;
 
 const SellingPrice = styled(ReleaseDate)``;
 
-const DateKey = styled.div`
+const Key = styled.div`
   font-size: 12px;
   color: rgba(34, 34, 34, 0.5);
 `;
 
-const DateValue = styled.div`
+const Value = styled.div`
   margin-top: 6px;
   font-size: 14px;
   color: rgba(34, 34, 34, 0.8);

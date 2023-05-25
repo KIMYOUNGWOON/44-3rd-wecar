@@ -1,39 +1,156 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { HOST_ADDRESS } from 'HostAddress';
+import { HOST_ADDRESS } from '../../../HostAddress';
 import styled from 'styled-components';
 import CarImage from './CarImage';
 import EnterAddress from './EnterAddress';
 import OfferPeriod from './OfferPeriod';
+import { useNavigate } from 'react-router';
 
 const initialValue = {
-  brand: '',
+  brandName: '',
   carModel: '',
   carNumber: '',
-  useCharge: '',
-  carType: '',
-  carSize: '',
-  boardingCapacity: '',
+  pricePerDay: '',
   fuelType: '',
   carImage: '',
-  shareTerm: '',
+  startDate: '',
+  endDate: '',
+  postCode: '',
   address: '',
+  detailAddress: '',
 };
 
-function Registration() {
-  const [brandData, setBrandData] = useState(initialValue);
+const initialKeyInfoValue = {
+  carType: '',
+  carSize: '',
+  capacity: '',
+};
+
+interface CarBrand {
+  id: number;
+  name: string;
+  logoUrl: string;
+}
+
+export type FileData = {
+  name: string;
+  type: string;
+  url: string | undefined;
+};
+
+interface RegistrationProps {
+  setPageMode: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Registration: React.FC<RegistrationProps> = ({ setPageMode }) => {
   const [inputValue, setInputValue] = useState(initialValue);
+  const [keyInfoValue, setKeyInfoValue] = useState(initialKeyInfoValue);
+  const [optionValue, setOptionValue] = useState<string[]>([]);
+  const [carBrandList, setCarBrandList] = useState<CarBrand[]>([]);
+  const [carModelList, setCarModelList] = useState<any>([]);
+  const [fileData, setFileData] = useState<FileData[]>([]);
+  const {
+    carNumber,
+    carModel,
+    fuelType,
+    pricePerDay,
+    startDate,
+    endDate,
+    postCode,
+    address,
+    detailAddress,
+  } = inputValue;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`${HOST_ADDRESS}/cars/brands`)
+      .then(response => {
+        if (response.status === 200) {
+          setCarBrandList(response.data);
+        }
+      })
+      .catch(error => console.log(error));
+  }, []);
 
   function handleChange(event: React.ChangeEvent<any>) {
     const { name, value } = event.target;
     setInputValue({ ...inputValue, [name]: value });
   }
 
-  // useEffect(() => {
-  //   axios.get(`${HOST_ADDRESS}/cars/brands`).then(response => {
-  //     console.log(response);
-  //   });
-  // });
+  function handleOption(event: React.ChangeEvent<any>) {
+    const { value, checked } = event.target;
+    if (checked === true) {
+      setOptionValue([...optionValue, value]);
+    } else {
+      const newOptionValue = [...optionValue];
+      const removeOptions = newOptionValue.filter(option => option !== value);
+      setOptionValue(removeOptions);
+    }
+  }
+
+  function handleBrandName(event: React.ChangeEvent<any>) {
+    const { value } = event.target;
+    const checkedCarBrand = carBrandList.find(data => data.name === value);
+    setInputValue({ ...inputValue, brandName: value });
+    axios
+      .get(`${HOST_ADDRESS}/cars/brands/${checkedCarBrand?.id}`)
+      .then(response => {
+        if (response.status === 200) {
+          setCarModelList(response.data);
+        }
+      })
+      .catch(error => console.log(error));
+  }
+
+  function handleCarModel(event: React.ChangeEvent<any>) {
+    const { value } = event.target;
+    const checkedCarModel = carModelList.find(
+      (data: any) => data.name === value
+    );
+    axios
+      .get(`${HOST_ADDRESS}/cars/models/${checkedCarModel?.id}`)
+      .then(response => {
+        if (response.status === 200) {
+          const { data } = response;
+          setInputValue({
+            ...inputValue,
+            carModel: value,
+          });
+          setKeyInfoValue({
+            ...keyInfoValue,
+            carType: data.carType.type,
+            carSize: data.engineSize.size,
+            capacity: `${data.capacity}인승`,
+          });
+        }
+      })
+      .catch(error => console.log(error));
+  }
+
+  function carUpload() {
+    axios
+      .post(`${HOST_ADDRESS}/cars/host`, {
+        newHostCar: {
+          carNumber,
+          carModel,
+          fuelType,
+          address: `${postCode} ${address} ${detailAddress}`,
+          pricePerDay,
+          options: optionValue,
+          startDate,
+          endDate,
+        },
+        files: fileData,
+      })
+      .then(response => {
+        if (response.status === 201) {
+          alert('차량이 등록되었습니다.');
+          setPageMode('breakdown');
+        }
+      });
+  }
 
   return (
     <RegistrationContainer>
@@ -43,12 +160,12 @@ function Registration() {
       <SelectContainer>
         <SelectBox
           name="brand"
-          value={inputValue.brand}
-          onChange={handleChange}
+          value={inputValue.brandName}
+          onChange={handleBrandName}
         >
           <SelectList>브랜드 선택</SelectList>
-          {CAR_BRAND.map((brand, i) => {
-            return <SelectList key={i}>{brand}</SelectList>;
+          {carBrandList.map(data => {
+            return <SelectList key={data.id}>{data.name}</SelectList>;
           })}
         </SelectBox>
         <GuidanceNotes>정확한 브랜드명을 작성해주세요.</GuidanceNotes>
@@ -64,11 +181,11 @@ function Registration() {
         <SelectBox
           name="carModel"
           value={inputValue.carModel}
-          onChange={handleChange}
+          onChange={handleCarModel}
         >
           <SelectList>차량 모델 선택</SelectList>
-          {CAR_BRAND.map((brand, i) => {
-            return <SelectList key={i}>{brand}</SelectList>;
+          {carModelList.map((data: any) => {
+            return <SelectList key={data.id}>{data.name}</SelectList>;
           })}
         </SelectBox>
         <GuidanceNotes>
@@ -87,7 +204,6 @@ function Registration() {
         <CarNumberInput
           name="carNumber"
           placeholder="OOO가OOOO"
-          // value={inputValue.carNumber}
           onChange={handleChange}
         />
         <GuidanceNotes>
@@ -105,7 +221,7 @@ function Registration() {
         </ChargeText>
         <div>
           <ChargeInput
-            name="useCharge"
+            name="pricePerDay"
             placeholder="숫자만 입력"
             onChange={handleChange}
           />
@@ -130,28 +246,32 @@ function Registration() {
               name="carType"
               type="radio"
               value="경차"
-              onChange={handleChange}
+              checked={keyInfoValue.carType === '경차'}
+              disabled
             />
             <Label>경차</Label>
             <RadioInput
               name="carType"
               type="radio"
               value="승용차"
-              onChange={handleChange}
+              checked={keyInfoValue.carType === '승용차'}
+              disabled
             />
             <Label>승용차</Label>
             <RadioInput
               name="carType"
               type="radio"
               value="SUV"
-              onChange={handleChange}
+              checked={keyInfoValue.carType === 'SUV'}
+              disabled
             />
             <Label>SUV</Label>
             <RadioInput
               name="carType"
               type="radio"
               value="승합차"
-              onChange={handleChange}
+              checked={keyInfoValue.carType === '승합차'}
+              disabled
             />
             <Label>승합차</Label>
           </RadioInputContainer>
@@ -159,38 +279,85 @@ function Registration() {
         <CarTypeBox>
           <BoxTitle>차종</BoxTitle>
           <RadioInputContainer>
-            <RadioInput name="carSize" type="radio" value="소형" />
+            <RadioInput
+              name="carSize"
+              type="radio"
+              value="소형"
+              checked={keyInfoValue.carSize === '소형'}
+              disabled
+            />
             <Label>소형</Label>
-            <RadioInput name="carSize" type="radio" value="중형" />
+            <RadioInput
+              name="carSize"
+              type="radio"
+              value="중형"
+              checked={keyInfoValue.carSize === '중형'}
+              disabled
+            />
             <Label>중형</Label>
-            <RadioInput name="carSize" type="radio" value="대형" />
+            <RadioInput
+              name="carSize"
+              type="radio"
+              value="대형"
+              checked={keyInfoValue.carSize === '대형'}
+              disabled
+            />
             <Label>대형</Label>
           </RadioInputContainer>
         </CarTypeBox>
         <PeopleNumberBox>
           <BoxTitle>승차 정원</BoxTitle>
           <RadioInputContainer>
-            <RadioInput name="boardingCapacity" type="radio" value="4인승" />
+            <RadioInput
+              name="boardingCapacity"
+              type="radio"
+              value="4인승"
+              checked={keyInfoValue.capacity === '4인승'}
+              disabled
+            />
             <Label>4인승</Label>
-            <RadioInput name="boardingCapacity" type="radio" value="5인승" />
-            <Label>5인승</Label>
-            <RadioInput name="boardingCapacity" type="radio" value="7인승" />
-            <Label>7인승</Label>
-            <RadioInput name="boardingCapacity" type="radio" value="9인승" />
-            <Label>9인승</Label>
+            <RadioInput
+              name="boardingCapacity"
+              type="radio"
+              value="6인승"
+              checked={keyInfoValue.capacity === '6인승'}
+              disabled
+            />
+            <Label>6인승</Label>
+            <RadioInput
+              name="boardingCapacity"
+              type="radio"
+              value="8인승"
+              checked={keyInfoValue.capacity === '8인승'}
+              disabled
+            />
+            <Label>8인승</Label>
+            <RadioInput
+              name="boardingCapacity"
+              type="radio"
+              value="10인승"
+              checked={keyInfoValue.capacity === '10인승'}
+              disabled
+            />
+            <Label>10인승</Label>
           </RadioInputContainer>
         </PeopleNumberBox>
         <FuelTypeBox>
           <BoxTitle>연료 유형</BoxTitle>
           <RadioInputContainer>
-            <RadioInput name="fuelType" type="radio" value="가솔린" />
-            <Label>가솔린</Label>
-            <RadioInput name="fuelType" type="radio" value="디젤" />
-            <Label>디젤</Label>
-            <RadioInput name="fuelType" type="radio" value="하이브리드" />
-            <Label>하이브리드</Label>
-            <RadioInput name="fuelType" type="radio" value="EV" />
-            <Label>EV</Label>
+            {FUEL_TYPE.map(data => {
+              return (
+                <div key={data.id}>
+                  <RadioInput
+                    name="fuelType"
+                    type="radio"
+                    value={data.fuel}
+                    onChange={handleChange}
+                  />
+                  <Label>{data.fuel}</Label>
+                </div>
+              );
+            })}
           </RadioInputContainer>
         </FuelTypeBox>
       </KeyInfoBox>
@@ -203,23 +370,39 @@ function Registration() {
           {CAR_OPTION.map((option, i) => {
             return (
               <CheckBoxForm key={i}>
-                <CheckBox name="carOption" type="checkbox" />
+                <CheckBox
+                  name="carOption"
+                  type="checkbox"
+                  value={option}
+                  onChange={handleOption}
+                />
                 <Label>{option}</Label>
               </CheckBoxForm>
             );
           })}
         </CheckBoxContainer>
       </CarOptionBox>
-      <CarImage />
-      <OfferPeriod />
-      <EnterAddress />
+      <CarImage fileData={fileData} setFileData={setFileData} />
+      <OfferPeriod handleChange={handleChange} />
+      <EnterAddress
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        handleChange={handleChange}
+      />
       <ButtonContainer>
-        <RegistrationButton>등록하기</RegistrationButton>
-        <CancelButton>취소</CancelButton>
+        <RegistrationButton onClick={carUpload}>등록하기</RegistrationButton>
+        <CancelButton
+          onClick={() => {
+            navigate('/');
+            window.scrollTo(0, 0);
+          }}
+        >
+          취소
+        </CancelButton>
       </ButtonContainer>
     </RegistrationContainer>
   );
-}
+};
 
 const RegistrationContainer = styled.div`
   padding: 20px 300px 40px;
@@ -338,6 +521,7 @@ const BoxTitle = styled.div`
 `;
 
 const RadioInputContainer = styled.div`
+  display: flex;
   flex: 4;
 `;
 
@@ -401,7 +585,12 @@ const CancelButton = styled(RegistrationButton)`
 
 export default Registration;
 
-const CAR_BRAND = ['현대', '기아', 'BMV', '벤츠', '아우디', '볼보', '쉐보레'];
+const FUEL_TYPE = [
+  { id: 1, fuel: '가솔린' },
+  { id: 2, fuel: '디젤' },
+  { id: 3, fuel: '하이브리드' },
+  { id: 4, fuel: 'EV' },
+];
 
 const CAR_OPTION = [
   '매뉴얼 에어컨',

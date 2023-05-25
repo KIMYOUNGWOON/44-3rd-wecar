@@ -4,6 +4,7 @@ import FilterBar from './FilterBar/FilterBar';
 import FilterModal from './FilterBar/FilterModal';
 import Footer from './Footer';
 import Login from './Login';
+import LoginSuccess from './LoginSuccess';
 import MenuModal from './MenuModal';
 import Nav from './Nav';
 import ProductList from './ProductList';
@@ -12,11 +13,13 @@ import SignUp from './SignUp';
 const Main: React.FC = () => {
   const [menuModal, setMenuModal] = useState<boolean>(false);
   const [userModal, setUserModal] = useState<boolean>(false);
+  const [successModal, setSuccessModal] = useState<boolean>(false);
   const [modeChange, setModeChange] = useState<string>('');
-  const [loginMode, setLoginMode] = useState<boolean>(false);
   const [searchMode, setSearchMode] = useState(false);
   const [searchModal, setSearchModal] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
+  const tokenChecked =
+    localStorage.getItem('accessToken') || localStorage.getItem('refreshToken');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,11 +36,11 @@ const Main: React.FC = () => {
     <MainContainer>
       <Nav
         setMenuModal={setMenuModal}
-        loginMode={loginMode}
         searchMode={searchMode}
         setSearchMode={setSearchMode}
         searchModal={searchModal}
         setSearchModal={setSearchModal}
+        tokenChecked={tokenChecked}
       />
       {menuModal && (
         <MenuBlackModal
@@ -60,16 +63,19 @@ const Main: React.FC = () => {
           setMenuModal={setMenuModal}
           setUserModal={setUserModal}
           setModeChange={setModeChange}
-          loginMode={loginMode}
-          setLoginMode={setLoginMode}
+          tokenChecked={tokenChecked}
         />
       )}
       {userModal &&
         (modeChange === 'signIn' ? (
-          <Login setUserModal={setUserModal} setLoginMode={setLoginMode} />
+          <Login
+            setUserModal={setUserModal}
+            setSuccessModal={setSuccessModal}
+          />
         ) : (
           <SignUp setUserModal={setUserModal} />
         ))}
+      {successModal && <LoginSuccess setSuccessModal={setSuccessModal} />}
       {searchMode && (
         <SearchBlackModal
           onClick={() => {
@@ -86,7 +92,7 @@ const Main: React.FC = () => {
           }}
         />
       )}
-      <FilterModal filterModal={filterModal} />
+      <FilterModal filterModal={filterModal} setFilterModal={setFilterModal} />
       <FilterBar setFilterModal={setFilterModal} />
       <ProductList />
       <Footer />

@@ -1,37 +1,64 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import { TitleBox, GuidanceNotes } from './Registration';
+import { HOST_ADDRESS } from '../../../HostAddress';
+import { FileData } from './Registration';
 
-function CarImage() {
-  const [selectedFile, setSelectedFile] = useState<File | null | undefined>(
-    null
-  );
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [addPreviewImage, setAddPreviewImage] = useState<string[]>([]);
+interface CarImageProps {
+  fileData: FileData[];
+  setFileData: React.Dispatch<React.SetStateAction<FileData[]>>;
+}
+
+const CarImage: React.FC<CarImageProps> = ({ fileData, setFileData }) => {
+  async function fetchSignedURL() {
+    try {
+      const response = await axios.get(`${HOST_ADDRESS}/utils/aws/signedurl`);
+      const signedURL = response.data.signedUrl; // 서버에서 반환한 Signed URL
+      return signedURL;
+    } catch (error) {
+      console.error('Failed to fetch Signed URL:', error);
+      throw error;
+    }
+  }
+
+  async function uploadFile(file: File) {
+    try {
+      const signedURL = await fetchSignedURL(); // Signed URL을 받아옴
+
+      // Signed URL을 사용하여 파일 업로드
+      await axios
+        .put(signedURL, file, {
+          headers: {
+            'Content-Type': file.type,
+          },
+        })
+        .then(response => {
+          const { config } = response;
+          const imageUrl = config.url?.slice(0, config.url.indexOf('?'));
+          setFileData([
+            ...fileData,
+            {
+              name: config.data.name,
+              type: config.data.type,
+              url: imageUrl,
+            },
+          ]);
+        });
+    } catch (error) {
+      console.error('Failed to upload file:', error);
+      throw error;
+    }
+  }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const objectURL = URL.createObjectURL(file);
-      setPreviewImage(objectURL);
-    } else {
-      setPreviewImage(null);
+      uploadFile(file);
     }
-
-    setSelectedFile(file);
   };
 
-  const AddFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const File = event.target.files?.[0];
-    if (File) {
-      const objectURL = URL.createObjectURL(File);
-      setAddPreviewImage([...addPreviewImage, objectURL]);
-    } else {
-      setAddPreviewImage([]);
-    }
-
-    setSelectedFile(File);
-  };
+  const addImageData = fileData.slice(1);
 
   return (
     <CarImageContainer>
@@ -41,14 +68,14 @@ function CarImage() {
       <RepresentativeImage>
         <SubTitle>대표 이미지</SubTitle>
         <div>
-          {previewImage && <PreviewImage src={previewImage} />}
+          {fileData.length !== 0 && <PreviewImage src={fileData[0]?.url} />}
           <ImageUpload
             id="upload"
             name="uploadImg"
             type="file"
             onChange={handleFileUpload}
           />
-          {previewImage === null && (
+          {fileData.length === 0 && (
             <ImageUploadLabel htmlFor="upload">
               <PlusIcon>+</PlusIcon>
             </ImageUploadLabel>
@@ -66,14 +93,14 @@ function CarImage() {
         <SubTitle>추가 이미지</SubTitle>
         <div>
           <ImageContainer>
-            {addPreviewImage.map((image, i) => {
-              return <PreviewImage key={i} src={image} />;
+            {addImageData.map(data => {
+              return <PreviewImage key={data.name} src={data.url} />;
             })}
             <ImageUpload
               id="addUpload"
               name="uploadImg"
               type="file"
-              onChange={AddFileUpload}
+              onChange={handleFileUpload}
             />
             <ImageUploadLabel htmlFor="addUpload">
               <PlusIcon>+</PlusIcon>
@@ -93,7 +120,7 @@ function CarImage() {
       </AdditionalImages>
     </CarImageContainer>
   );
-}
+};
 
 const CarImageContainer = styled.div``;
 

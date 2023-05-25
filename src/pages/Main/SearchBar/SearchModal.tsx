@@ -49,7 +49,7 @@ const SearchModalContainer = styled.div<{ modalchange: string }>`
   left: ${({ modalchange }) => (modalchange === 'passenger' ? 53 : 27)}%;
   border-radius: 30px;
   background-color: #ffffff;
-  z-index: 1;
   box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.2);
+  z-index: 2;
 `;
 export default SearchModal;

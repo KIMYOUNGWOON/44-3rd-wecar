@@ -2,10 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { BsFillCheckSquareFill } from 'react-icons/bs';
 
-function CarOption() {
+interface CarOptionProps {
+  carData: any;
+}
+
+const CarOption: React.FC<CarOptionProps> = ({ carData }) => {
+  const { options } = carData;
   return (
     <CarOptionContainer>
-      {OPTION_DATA.map((data, i) => {
+      {options.map((data: any, i: number) => {
         return (
           <CarOptionList key={i}>
             <CheckIcon />
@@ -15,7 +20,7 @@ function CarOption() {
       })}
     </CarOptionContainer>
   );
-}
+};
 
 const CarOptionContainer = styled.div`
   display: flex;
@@ -23,6 +28,7 @@ const CarOptionContainer = styled.div`
   align-items: center;
   gap: 30px;
   flex-wrap: wrap;
+  height: 260px;
   margin-bottom: 40px;
   border-top: 1px solid #ebebeb;
   border-bottom: 1px solid #ebebeb;
@@ -45,15 +51,3 @@ const CarOptionText = styled.div`
 `;
 
 export default CarOption;
-
-const OPTION_DATA = [
-  '매뉴얼 에어컨',
-  '후방 모니터',
-  '스마트 트렁크',
-  '썬루프',
-  '크루즈컨트롤',
-  '열선시트',
-  '하이빔 보조',
-  '패들 쉬프트',
-  '차로 이탈방지 보조',
-];

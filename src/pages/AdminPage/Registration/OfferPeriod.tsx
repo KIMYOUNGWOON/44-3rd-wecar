@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { TitleBox } from './Registration';
 
-const OfferPeriod: React.FC = () => {
+interface OfferPeriodProps {
+  handleChange: (event: React.ChangeEvent<any>) => void;
+}
+
+const OfferPeriod: React.FC<OfferPeriodProps> = ({ handleChange }) => {
   const [btnChange, setBtnChange] = useState(false);
 
   return (
@@ -35,9 +39,9 @@ const OfferPeriod: React.FC = () => {
       </ContentBox>
       {btnChange && (
         <InputContainer>
-          <DateInput type="date" />
+          <DateInput name="startDate" type="date" onChange={handleChange} />
           <WaveText>~</WaveText>
-          <DateInput type="date" />
+          <DateInput name="endDate" type="date" onChange={handleChange} />
         </InputContainer>
       )}
     </OfferPeriodContainer>

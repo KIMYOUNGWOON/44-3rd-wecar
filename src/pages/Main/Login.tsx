@@ -6,24 +6,21 @@ import { SiKakao } from 'react-icons/si';
 import { SiApple } from 'react-icons/si';
 import { AiFillFacebook } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
+import { HOST_ADDRESS } from '../../HostAddress';
 
 interface LoginProps {
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setLoginMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setSuccessModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface User {
-  email: string;
-  password: string;
-  userType: 'general' | 'supply';
-}
+const loginValueObj = { email: '', password: '', userType: 'general' };
 
-const loginValueObj: User = { email: '', password: '', userType: 'general' };
-
-const Login: React.FC<LoginProps> = ({ setUserModal, setLoginMode }) => {
-  const [loginValue, setLoginValue] = useState<User>(loginValueObj);
+const Login: React.FC<LoginProps> = ({ setUserModal, setSuccessModal }) => {
+  const [loginValue, setLoginValue] = useState(loginValueObj);
   const { email, password } = loginValue;
   const isValid = email.includes('@') && password.length >= 6;
+  const userTypeChecked = loginValue.userType === 'general' ? 'users' : 'hosts';
+  const getUserType = loginValue.userType === 'general' ? 'user' : 'host';
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -33,23 +30,30 @@ const Login: React.FC<LoginProps> = ({ setUserModal, setLoginMode }) => {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     axios
-      .post('http://192.168.0.28:3000/auth/signin', {
-        email: loginValue.email,
-        password: loginValue.password,
+      .post(`${HOST_ADDRESS}/${userTypeChecked}/signin`, {
+        email,
+        password,
       })
       .then(response => {
         if (response.status === 201) {
-          const { accessToken, refreshToken } = response.data;
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
           setUserModal(false);
-          setLoginMode(true);
-          alert('로그인에 성공했습니다.');
+          setSuccessModal(true);
         }
-        console.log(response);
+      })
+      .then(() => {
+        axios
+          .get(`${HOST_ADDRESS}/auth/check/${getUserType}`)
+          .then(response => {
+            if (response.status === 200) {
+              localStorage.setItem('userName', response.data.name);
+            }
+          });
       })
       .catch(error => {
-        console.log(error);
+        const { response } = error;
+        if (response.status === 404) {
+          alert('회원 유형을 확인해주세요.');
+        }
       });
   }
 
@@ -148,7 +152,7 @@ const LoginContainer = styled.div`
   border-radius: 10px;
   box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
   overflow-y: scroll;
-  z-index: 1;
+  z-index: 2;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -157,10 +161,13 @@ const LoginContainer = styled.div`
 `;
 
 const Header = styled.div`
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   padding: 30px 0;
   border-bottom: 1px solid #eeeeee;
+  background-color: #ffffff;
 `;
 
 const LoginText = styled.div`

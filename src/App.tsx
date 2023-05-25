@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Main from 'pages/Main/Main';
-import SellerPage from './pages/SellerPage/SellerPage';
+import AdminPage from './pages/AdminPage/AdminPage';
 import ProductDetail from 'pages/Detail/ProductDetail';
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/seller" element={<SellerPage />} />
+        <Route path="/seller" element={<AdminPage />} />
         <Route path="/detail" element={<ProductDetail />} />
       </Routes>
     </BrowserRouter>

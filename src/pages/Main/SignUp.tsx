@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { HOST_ADDRESS } from '../../HostAddress';
 
 interface SignUpProps {
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
 const signUpValueObj = {
   lastName: '',
   firstName: '',
@@ -28,6 +28,8 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
   const [checkedValue, setCheckedValue] = useState(isChecked);
   const passwordChecked = signUpValue.password === signUpValue.passwordConfirm;
   const fullName = signUpValue.lastName + signUpValue.firstName;
+  const userTypeChecked =
+    signUpValue.userType === 'general' ? 'users' : 'hosts';
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -39,21 +41,36 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
     setCheckedValue({ ...checkedValue, [name]: checked });
   }
 
-  console.log(signUpValue);
-  console.log(checkedValue);
+  const USERS_SIGNUP = {
+    email: signUpValue.email,
+    password: signUpValue.password,
+    name: fullName,
+    phoneNumber: signUpValue.phoneNumber,
+    driversLicenseNumber: signUpValue.licenseNumber,
+    birthday: signUpValue.birthDay,
+    marketingAgreement: checkedValue.choiceCheck,
+  };
+
+  const HOSTS_SIGNUP = {
+    email: signUpValue.email,
+    password: signUpValue.password,
+    name: fullName,
+    phoneNumber: signUpValue.phoneNumber,
+    marketingAgreement: checkedValue.choiceCheck,
+  };
+  const POST_SIGNUP = userTypeChecked === 'users' ? USERS_SIGNUP : HOSTS_SIGNUP;
 
   function handleSubmit() {
     axios
-      .post('http://192.168.0.28:3000/users/signup', {
-        email: signUpValue.email,
-        password: signUpValue.password,
-        name: fullName,
-        phoneNumber: signUpValue.phoneNumber,
-        driversLicenseNumber: signUpValue.licenseNumber,
-        birthday: signUpValue.birthDay,
-        marketingAgreement: checkedValue.choiceCheck,
+      .post(`${HOST_ADDRESS}/${userTypeChecked}/signup`, {
+        ...POST_SIGNUP,
       })
       .then(response => {
+        if (response.status === 201) {
+          alert('회원가입이 되었습니다.');
+          setUserModal(false);
+          window.document.body.style.overflowY = 'scroll';
+        }
         console.log(response);
       })
       .catch(error => {
@@ -138,7 +155,7 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
           autoComplete="new-password"
         />
         {signUpValue.password && signUpValue.passwordConfirm && (
-          <WarningMessage passwordchecked={passwordChecked}>
+          <WarningMessage passwordchecked={passwordChecked.toString()}>
             {passwordChecked
               ? '비밀번호가 일치합니다.'
               : '비밀번호가 일치하지 않습니다'}
@@ -247,8 +264,6 @@ const SignUpContainer = styled.div`
   border-radius: 10px;
   box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
   overflow-y: scroll;
-  z-index: 1;
-
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
@@ -256,10 +271,13 @@ const SignUpContainer = styled.div`
 `;
 
 const Header = styled.div`
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   padding: 30px 0;
   border-bottom: 1px solid #eeeeee;
+  background-color: #ffffff;
 `;
 
 const SignUpText = styled.div`
@@ -352,9 +370,10 @@ const GuidanceNotes = styled.div`
   margin-bottom: 30px;
 `;
 
-const WarningMessage = styled.div<{ passwordchecked: boolean }>`
+const WarningMessage = styled.div<{ passwordchecked: string }>`
   font-size: 12px;
-  color: ${({ passwordchecked }) => (passwordchecked ? '#29b9ff' : '#ff2735')};
+  color: ${({ passwordchecked }) =>
+    passwordchecked === 'true' ? '#29b9ff' : '#ff2735'};
   margin-bottom: 10px;
 `;
 

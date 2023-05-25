@@ -17,10 +17,17 @@ const FilterCarType: React.FC<FilterCarTypeProps> = ({
   carTypeId,
   setCarTypeId,
 }) => {
+  function CheckingCarType(targetId: number) {
+    if (carTypeId === targetId) {
+      setCarTypeId(0);
+    } else {
+      setCarTypeId(targetId);
+    }
+  }
   return (
     <FilterCarTypeContainer>
       <SelectContainer>
-        <CarTypeTitle>차량 외형</CarTypeTitle>
+        <CarTypeTitle>외형</CarTypeTitle>
         <CarTypeDescription>
           이용을 원하시는 차량의 외형을 선택해주세요
         </CarTypeDescription>
@@ -31,7 +38,7 @@ const FilterCarType: React.FC<FilterCarTypeProps> = ({
                 key={data.id}
                 clicked={(carTypeId === data.id).toString()}
                 onClick={() => {
-                  setCarTypeId(data.id);
+                  CheckingCarType(data.id);
                 }}
               >
                 {data.carType}
@@ -42,7 +49,11 @@ const FilterCarType: React.FC<FilterCarTypeProps> = ({
         <CarTypeDescription />
       </SelectContainer>
       <CarTypeImageContainer>
-        <CarTypeImage carimage={CAR_IMAGE[carTypeId - 1]} />
+        {carTypeId === 0 ? (
+          <NotSelectText>선택 안 함</NotSelectText>
+        ) : (
+          <CarTypeImage carimage={CAR_IMAGE[carTypeId - 1]} />
+        )}
       </CarTypeImageContainer>
     </FilterCarTypeContainer>
   );
@@ -62,8 +73,8 @@ const SelectContainer = styled.div`
 `;
 
 const CarTypeTitle = styled.div`
-  margin-bottom: 10px;
-  font-size: 16px;
+  margin-bottom: 15px;
+  font-size: 18px;
   font-weight: 600;
 `;
 
@@ -71,6 +82,12 @@ const CarTypeDescription = styled.div`
   margin-bottom: 25px;
   font-size: 14px;
   color: #29b8ff;
+`;
+
+const NotSelectText = styled.div`
+  font-size: 30px;
+  text-align: center;
+  padding-right: 20px;
 `;
 
 const SelectBtnContainer = styled.div`

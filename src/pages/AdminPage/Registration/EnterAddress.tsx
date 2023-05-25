@@ -3,16 +3,44 @@ import styled from 'styled-components';
 import DaumPostcode from 'react-daum-postcode';
 import { TitleBox } from './Registration';
 
-const addressValueObj = { postCode: '', address: '', detailAddress: '' };
+interface EnterAddressProps {
+  handleChange: (event: React.ChangeEvent<any>) => void;
+  setInputValue: React.Dispatch<
+    React.SetStateAction<{
+      brandName: string;
+      carModel: string;
+      carNumber: string;
+      pricePerDay: string;
+      fuelType: string;
+      carImage: string;
+      startDate: string;
+      endDate: string;
+      postCode: string;
+      address: string;
+      detailAddress: string;
+    }>
+  >;
+  inputValue: {
+    brandName: string;
+    carModel: string;
+    carNumber: string;
+    pricePerDay: string;
+    fuelType: string;
+    carImage: string;
+    startDate: string;
+    endDate: string;
+    postCode: string;
+    address: string;
+    detailAddress: string;
+  };
+}
 
-function EnterAddress() {
-  const [inputValue, setInputValue] = useState(addressValueObj);
+const EnterAddress: React.FC<EnterAddressProps> = ({
+  inputValue,
+  setInputValue,
+  handleChange,
+}) => {
   const [openPostcode, setOpenPostcode] = useState(false);
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setInputValue({ ...inputValue, [name]: value });
-  }
 
   function handleOpen() {
     setOpenPostcode(current => !current);
@@ -74,7 +102,7 @@ function EnterAddress() {
       </EnterAddressBox>
     </EnterAddressContainer>
   );
-}
+};
 
 const EnterAddressContainer = styled.div`
   position: relative;

@@ -22,6 +22,7 @@ const Header: React.FC<HeaderProps> = ({ pagemode, setPageMode }) => {
       <Register
         onClick={() => {
           setPageMode('registration');
+          window.scrollTo(0, 0);
         }}
       >
         차량 등록
@@ -29,6 +30,7 @@ const Header: React.FC<HeaderProps> = ({ pagemode, setPageMode }) => {
       <BreakDown
         onClick={() => {
           setPageMode('breakdown');
+          window.scrollTo(0, 0);
         }}
       >
         예약 내역
@@ -39,13 +41,16 @@ const Header: React.FC<HeaderProps> = ({ pagemode, setPageMode }) => {
 };
 
 const HeaderContainer = styled.div`
-  position: relative;
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   width: 100%;
   height: 80px;
   padding: 0px 80px;
   border-bottom: 1px solid #eeeeee;
+  background-color: #ffffff;
+  z-index: 1;
 `;
 
 const Logo = styled.img`

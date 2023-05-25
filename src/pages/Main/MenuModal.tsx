@@ -6,21 +6,19 @@ interface MenuModalProps {
   setMenuModal: React.Dispatch<React.SetStateAction<boolean>>;
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
   setModeChange: React.Dispatch<React.SetStateAction<string>>;
-  loginMode: boolean;
-  setLoginMode: React.Dispatch<React.SetStateAction<boolean>>;
+  tokenChecked: null | string;
 }
 
 const MenuModal: React.FC<MenuModalProps> = ({
   setMenuModal,
   setUserModal,
   setModeChange,
-  loginMode,
-  setLoginMode,
+  tokenChecked,
 }) => {
   const navigate = useNavigate();
   return (
     <ModalContainer>
-      {loginMode && (
+      {tokenChecked && (
         <>
           <Account>계정</Account>
           <WishList>위시리스트</WishList>
@@ -29,15 +27,18 @@ const MenuModal: React.FC<MenuModalProps> = ({
           </Notice>
           <LogOut
             onClick={() => {
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('userName');
               setMenuModal(false);
-              setLoginMode(false);
+              alert('로그아웃 되었습니다.');
             }}
           >
             로그아웃
           </LogOut>
         </>
       )}
-      {!loginMode && (
+      {!tokenChecked && (
         <>
           <SingIn
             onClick={() => {
@@ -64,6 +65,7 @@ const MenuModal: React.FC<MenuModalProps> = ({
       <CarSharing
         onClick={() => {
           navigate('/seller');
+          window.document.body.style.overflowY = 'scroll';
         }}
       >
         당신의 차를 <span>위카</span>하세요
@@ -83,7 +85,6 @@ const ModalContainer = styled.div`
   border-radius: 10px;
   box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
   background-color: #ffffff;
-  z-index: 1;
 `;
 const SingIn = styled.div`
   padding: 19px 15px 15px 15px;

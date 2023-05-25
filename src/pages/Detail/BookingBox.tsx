@@ -1,0 +1,185 @@
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import DatePicker from './DatePicker';
+import moment from 'moment';
+
+function BookingBox() {
+  const [datePickerModal, setDatePickerModal] = useState(false);
+  const [startDate, setStartDate] = useState<Date | string>('날짜 추가');
+  const [endDate, setEndDate] = useState<Date | string>('날짜 추가');
+  const formattedStartDate =
+    startDate !== '날짜 추가'
+      ? moment(startDate).format('YYYY년 MM월 DD일')
+      : '날짜 추가';
+  const formattedEndDate =
+    endDate !== '날짜 추가'
+      ? moment(endDate).format('YYYY년 MM월 DD일')
+      : '날짜 추가';
+
+  console.log(formattedStartDate);
+
+  const handleStartDateChange = (date: any) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: any) => {
+    setEndDate(date);
+  };
+
+  return (
+    <BookingBoxContainer>
+      {datePickerModal && (
+        <DatePicker
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          handleStartDateChange={handleStartDateChange}
+          handleEndDateChange={handleEndDateChange}
+          setDatePickerModal={setDatePickerModal}
+        />
+      )}
+      <PricePerDay>
+        150,000원
+        <span>/일</span>
+      </PricePerDay>
+      <DateButtonContainer
+        onClick={() => {
+          setDatePickerModal(true);
+        }}
+      >
+        <StartDateBtn>
+          <DateTitle>탑승일</DateTitle>
+          <DateMark>{formattedStartDate}</DateMark>
+        </StartDateBtn>
+        <EndDateBtn>
+          <DateTitle>반납일</DateTitle>
+          <DateMark>{formattedEndDate}</DateMark>
+        </EndDateBtn>
+      </DateButtonContainer>
+      <BookingButton>예약하기</BookingButton>
+      <GuideMessage>예약 확정 전에는 요금이 청구되지 않습니다.</GuideMessage>
+      <CalculateContainer>
+        <FlexStart>82,706원 ✕ 5일</FlexStart>
+        <FlexEnd>413,529원</FlexEnd>
+      </CalculateContainer>
+      <CommissionContainer>
+        <FlexStart>위카 서비스 수수료</FlexStart>
+        <FlexEnd>58,385원</FlexEnd>
+      </CommissionContainer>
+      <TotalAmountContainer>
+        <TotalAmountTitle>총 합계</TotalAmountTitle>
+        <TotalAmountValue>471,914원</TotalAmountValue>
+      </TotalAmountContainer>
+    </BookingBoxContainer>
+  );
+}
+
+const BookingBoxContainer = styled.div`
+  position: sticky;
+  top: 120px;
+  flex: 1;
+  flex-shrink: 0;
+  width: 380px;
+  padding: 20px;
+  border: 1px solid #eeeeee;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
+`;
+
+const PricePerDay = styled.div`
+  margin-bottom: 20px;
+  font-size: 23px;
+  span {
+    margin-left: 6px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+`;
+
+const DateButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const StartDateBtn = styled.div`
+  flex: 1;
+  text-align: center;
+`;
+const EndDateBtn = styled(StartDateBtn)`
+  border-left: 1px solid #eeeeee;
+`;
+const DateTitle = styled.div`
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+`;
+const DateMark = styled.div`
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.4);
+`;
+const BookingButton = styled.div`
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #2ab9ff;
+  font-size: 18px;
+  color: #ffffff;
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+const GuideMessage = styled.div`
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+`;
+const CalculateContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+`;
+
+const CommissionContainer = styled(CalculateContainer)``;
+
+const FlexStart = styled.div`
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.6);
+  text-decoration: underline;
+`;
+
+const FlexEnd = styled.div`
+  font-size: 16px;
+  color: #222222;
+`;
+
+const TotalAmountContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 0 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+`;
+
+const TotalAmountTitle = styled.div`
+  font-size: 17px;
+`;
+
+const TotalAmountValue = styled.div`
+  font-size: 20px;
+  font-weight: 600;
+`;
+
+export default BookingBox;

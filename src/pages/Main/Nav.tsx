@@ -1,38 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import { HOST_ADDRESS } from '../../HostAddress';
 import styled from 'styled-components';
 import { CgProfile } from 'react-icons/cg';
 import logoImg from '../../assets/mainImg/logoImg.png';
 import SearchBar from './SearchBar/SearchBar';
 
 interface NavProps {
-  loginMode: boolean;
   searchMode: boolean;
   setSearchMode: React.Dispatch<React.SetStateAction<boolean>>;
   setMenuModal: React.Dispatch<React.SetStateAction<boolean>>;
   searchModal: boolean;
   setSearchModal: React.Dispatch<React.SetStateAction<boolean>>;
+  tokenChecked: null | string;
 }
 
 const Nav: React.FC<NavProps> = ({
   setMenuModal,
-  loginMode,
   searchMode,
   setSearchMode,
   searchModal,
   setSearchModal,
+  tokenChecked,
 }) => {
   const navigate = useNavigate();
-  // const accessToken = localStorage.getItem('accessToken');
-
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     axios
-  //       .get('', { headers: { Authorization: accessToken } })
-  //       .then(reponse => console.log(reponse));
-  //   }
-  // });
+  const userName = localStorage.getItem('userName');
 
   return (
     <NavContainer searchmode={searchMode.toString()}>
@@ -41,6 +34,7 @@ const Nav: React.FC<NavProps> = ({
         alt="로고이미지"
         onClick={() => {
           navigate('/');
+          window.scrollTo(0, 0);
         }}
       />
       <SearchBar
@@ -48,17 +42,30 @@ const Nav: React.FC<NavProps> = ({
         setSearchMode={setSearchMode}
         searchModal={searchModal}
         setSearchModal={setSearchModal}
+        tokenChecked={tokenChecked}
       />
       <UserContainer>
         <CarSharing
           onClick={() => {
-            navigate('/seller');
+            if (tokenChecked) {
+              axios
+                .get(`${HOST_ADDRESS}/auth/check/host`)
+                .then(response => {
+                  navigate('/seller');
+                })
+                .catch(error => {
+                  console.log(error);
+                  alert('공급회원 전용 페이지입니다.');
+                });
+            } else {
+              alert('공급회원 전용 페이지입니다.');
+            }
           }}
         >
           당신의 차를 위카하세요
         </CarSharing>
         <UserMenu>
-          {loginMode && <UserName>김영운 님</UserName>}
+          {tokenChecked && <UserName>{userName} 님</UserName>}
           <Profile
             onClick={() => {
               setMenuModal(prev => !prev);
@@ -80,6 +87,7 @@ const NavContainer = styled.div<{ searchmode: string }>`
   transition: height 0.4s;
   padding: 30px 80px;
   border-bottom: 1px solid #eeeeee;
+  background-color: #ffffff;
 `;
 
 const Logo = styled.img`

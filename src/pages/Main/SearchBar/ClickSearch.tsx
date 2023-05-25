@@ -20,12 +20,12 @@ const ClickSearch: React.FC<ClickSearchProps> = ({
     { id: 1, title: '지역', subTitle: regionValue },
     {
       id: 2,
-      title: '탑승일시',
+      title: '탑승일',
       subTitle: formattedStartDate,
     },
     {
       id: 3,
-      title: '반납일시',
+      title: '반납일',
       subTitle: formattedEndDate,
     },
     { id: 4, title: '승차정원', subTitle: passengerValue },
