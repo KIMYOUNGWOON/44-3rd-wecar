@@ -10,6 +10,7 @@ import BookingBox from './BookingBox';
 import logoImg from '../../assets/mainImg/logoImg.png';
 import Footer from 'pages/Main/Footer';
 import HostCarInfo from './HostCarInfo';
+import Map from './Map';
 
 const BMW_IMAGE = [bmwImg1, bmwImg2, bmwImg3, bmwImg4, bmwImg5];
 const BMW_IMAGE_SUB = BMW_IMAGE.slice(1);
@@ -42,6 +43,14 @@ function ProductDetail() {
           <BookingBox />
         </MainSectionContainer>
       </ProductDetailContainer>
+      <AddressContainer>
+        <AddressTitle>
+          픽업 / 반납 위치 <span>•</span>
+        </AddressTitle>
+        <AddressValue>서울특별시 테헤란로 427 위워크 건물 앞</AddressValue>
+      </AddressContainer>
+
+      <Map />
       <Footer />
     </>
   );
@@ -109,4 +118,22 @@ const MainSectionContainer = styled.div`
   margin-top: 60px;
   gap: 90px;
 `;
+
+const AddressContainer = styled.div`
+  width: 1200px;
+  margin: 130px auto 30px;
+`;
+
+const AddressTitle = styled.div`
+  font-size: 25px;
+  margin-bottom: 40px;
+  span {
+    color: #fa545c;
+  }
+`;
+
+const AddressValue = styled.div`
+  font-size: 17px;
+`;
+
 export default ProductDetail;

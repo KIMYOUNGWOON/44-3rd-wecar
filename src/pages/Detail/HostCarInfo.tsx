@@ -52,8 +52,12 @@ function HostCarInfo() {
         <TermTitle>
           공유 기간 <span>•</span>
         </TermTitle>
-        <TermValue />
+        <TermValue>2023년 5월 7일 ~ 2023년 6월 3일</TermValue>
       </TermContainer>
+      <TermMessage>
+        해당 기간 외에 예약은 불가능하니 참고 바랍니다. <br />
+        또한, 미리 예약된 날짜의 경우 날짜 선택이 불가능합니다.
+      </TermMessage>
     </HostCarInfoContainer>
   );
 }
@@ -212,6 +216,13 @@ const TermTitle = styled.div`
 const TermValue = styled.div`
   font-size: 18px;
   color: rgba(34, 34, 34, 0.8);
+  text-align: right;
+`;
+
+const TermMessage = styled.div`
+  font-size: 15px;
+  line-height: 1.5;
+  color: #29b9ff;
   text-align: right;
 `;
 
