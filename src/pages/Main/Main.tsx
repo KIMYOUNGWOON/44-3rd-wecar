@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import FilterBar from './FilterBar/FilterBar';
@@ -9,6 +10,8 @@ import MenuModal from './MenuModal';
 import Nav from './Nav';
 import ProductList from './ProductList';
 import SignUp from './SignUp';
+import { HOST_ADDRESS } from '../../HostAddress';
+import { useSearchParams } from 'react-router-dom';
 
 const Main: React.FC = () => {
   const [menuModal, setMenuModal] = useState<boolean>(false);
@@ -20,6 +23,9 @@ const Main: React.FC = () => {
   const [filterModal, setFilterModal] = useState(false);
   const tokenChecked =
     localStorage.getItem('accessToken') || localStorage.getItem('refreshToken');
+  const [carList, setCarList] = useState<any>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(searchParams.getAll('sort'));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,6 +38,12 @@ const Main: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    axios.get(`${HOST_ADDRESS}/cars`).then(response => {
+      setCarList(response.data);
+    });
+  }, []);
+
   return (
     <MainContainer>
       <Nav
@@ -41,6 +53,8 @@ const Main: React.FC = () => {
         searchModal={searchModal}
         setSearchModal={setSearchModal}
         tokenChecked={tokenChecked}
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
       />
       {menuModal && (
         <MenuBlackModal
@@ -94,7 +108,7 @@ const Main: React.FC = () => {
       )}
       <FilterModal filterModal={filterModal} setFilterModal={setFilterModal} />
       <FilterBar setFilterModal={setFilterModal} />
-      <ProductList />
+      <ProductList carList={carList} />
       <Footer />
     </MainContainer>
   );
@@ -108,6 +122,7 @@ const MenuBlackModal = styled.div`
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
 `;
 
 const SearchBlackModal = styled(MenuBlackModal)`
@@ -115,18 +130,21 @@ const SearchBlackModal = styled(MenuBlackModal)`
   inset: 0;
   transform: translateY(230px);
   background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
 `;
 
 const UserBlackModal = styled.div`
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
 `;
 
 const FilterBlackModal = styled(MenuBlackModal)`
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
 `;
 
 export default Main;

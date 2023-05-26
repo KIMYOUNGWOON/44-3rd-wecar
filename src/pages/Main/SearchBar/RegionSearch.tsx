@@ -9,7 +9,11 @@ const RegionSearch: React.FC<RegionSearchProps> = ({ regionValueChange }) => {
   const [currentId, setCurrentId] = useState(0);
 
   function handleClick(targetId: number): void {
-    setCurrentId(targetId);
+    if (currentId === targetId) {
+      setCurrentId(0);
+    } else {
+      setCurrentId(targetId);
+    }
   }
 
   return (
@@ -24,7 +28,11 @@ const RegionSearch: React.FC<RegionSearchProps> = ({ regionValueChange }) => {
               ischecked={(currentId === data.id).toString()}
               onClick={() => {
                 handleClick(data.id);
-                regionValueChange(data.region);
+                if (currentId === data.id) {
+                  regionValueChange('지역 검색');
+                } else {
+                  regionValueChange(data.region);
+                }
               }}
             >
               {data.region}
@@ -37,8 +45,8 @@ const RegionSearch: React.FC<RegionSearchProps> = ({ regionValueChange }) => {
 };
 
 const RegionSearchContainer = styled.div`
-  width: 500px;
-  height: 500px;
+  width: 445px;
+  height: 420px;
   padding: 30px 30px;
 `;
 
@@ -56,7 +64,7 @@ const RegionSearchSubTitle = styled.div`
 const RegionChoiceContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 30px 30px;
+  gap: 25px 25px;
 `;
 
 const RegionBox = styled.div<{ ischecked: string }>`
@@ -77,21 +85,21 @@ const RegionBox = styled.div<{ ischecked: string }>`
 export default RegionSearch;
 
 const REGION_DATA = [
-  { id: 1, region: '서울특별시' },
-  { id: 2, region: '부산광역시' },
-  { id: 3, region: '대구광역시' },
-  { id: 4, region: '인천광역시' },
-  { id: 5, region: '광주광역시' },
-  { id: 6, region: '대전광역시' },
-  { id: 7, region: '울산광역시' },
+  { id: 1, region: '서울' },
+  { id: 2, region: '부산' },
+  { id: 3, region: '대구' },
+  { id: 4, region: '인천' },
+  { id: 5, region: '광주' },
+  { id: 6, region: '대전' },
+  { id: 7, region: '울산' },
   { id: 8, region: '세종특별자치시' },
-  { id: 9, region: '경기도' },
-  { id: 10, region: '강원도' },
-  { id: 11, region: '충청북도' },
-  { id: 12, region: '충청남도' },
-  { id: 13, region: '전라북도' },
-  { id: 14, region: '전라남도' },
-  { id: 15, region: '경상북도' },
-  { id: 16, region: '경상남도' },
+  { id: 9, region: '경기' },
+  { id: 10, region: '강원' },
+  { id: 11, region: '충북' },
+  { id: 12, region: '충남' },
+  { id: 13, region: '전북' },
+  { id: 14, region: '전남' },
+  { id: 15, region: '경북' },
+  { id: 16, region: '경남' },
   { id: 17, region: '제주특별자치도' },
 ];

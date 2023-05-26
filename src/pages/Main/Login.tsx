@@ -36,6 +36,10 @@ const Login: React.FC<LoginProps> = ({ setUserModal, setSuccessModal }) => {
       })
       .then(response => {
         if (response.status === 201) {
+          const newAccessToken = response.data.accessToken;
+          const newRefreshToken = response.data.refreshToken;
+          localStorage.setItem('accessToken', newAccessToken);
+          localStorage.setItem('refreshToken', newRefreshToken);
           setUserModal(false);
           setSuccessModal(true);
         }
@@ -53,6 +57,8 @@ const Login: React.FC<LoginProps> = ({ setUserModal, setSuccessModal }) => {
         const { response } = error;
         if (response.status === 404) {
           alert('회원 유형을 확인해주세요.');
+        } else if (response.status === 400) {
+          alert('이메일 또는 비밀번호를 확인해주세요.');
         }
       });
   }

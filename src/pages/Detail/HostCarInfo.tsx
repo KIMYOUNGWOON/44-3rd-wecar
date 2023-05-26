@@ -1,18 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BsFillCheckSquareFill } from 'react-icons/bs';
+import moment from 'moment';
 
-function HostCarInfo() {
+interface HostCarInfoProps {
+  carData: any;
+}
+
+const HostCarInfo: React.FC<HostCarInfoProps> = ({ carData }) => {
+  function dateChange(date: Date) {
+    const dateObj = moment(date).utcOffset('-12:00');
+    const koreanDate = dateObj.format('YYYY년 MM월 DD일');
+
+    return koreanDate;
+  }
+
   return (
     <HostCarInfoContainer>
-      <HostName>OOO 님이 호스팅하는 차량</HostName>
-      <CarBrandName>BMW</CarBrandName>
-      <CarModelName>M8 컴페티션 그란 쿠페</CarModelName>
+      <HostName>{carData?.host.name} 님이 호스팅하는 차량</HostName>
+      <CarBrandName>{carData?.carModel.brand.name}</CarBrandName>
+      <CarModelName>{carData?.carModel.name}</CarModelName>
       <CarNumberTitle>
         차량 번호 <span>•</span>
       </CarNumberTitle>
       <CarNumberContainer>
-        <CarNumber>123가1234</CarNumber>
+        <CarNumber>{carData?.carNumber}</CarNumber>
       </CarNumberContainer>
       <KeyInfoTitle>
         차량 주요 정보 <span>•</span>
@@ -20,30 +32,30 @@ function HostCarInfo() {
       <KeyInfoContainer>
         <Appearance>
           <Key>외형</Key>
-          <Value>승용차</Value>
+          <Value>{carData?.carModel.carType.name}</Value>
         </Appearance>
         <ReleaseDate>
           <Key>차종</Key>
-          <Value>대형</Value>
+          <Value>{carData?.carModel.engineSize.name}</Value>
         </ReleaseDate>
         <Color>
           <Key>승차 정원</Key>
-          <Value>4인승</Value>
+          <Value>{carData?.carModel.capacity}인승</Value>
         </Color>
         <SellingPrice>
           <Key>연류 유형</Key>
-          <Value>가솔린</Value>
+          <Value>{carData?.fuelType.name}</Value>
         </SellingPrice>
       </KeyInfoContainer>
       <CarOptionTitle>
         차량 옵션 <span>•</span>
       </CarOptionTitle>
       <CarOptionContainer>
-        {CAR_OPTION.map((data: string, i: number) => {
+        {carData?.options.map((data: any) => {
           return (
-            <CarOptionList key={i}>
+            <CarOptionList key={data.id}>
               <CheckIcon />
-              <CarOptionText>{data}</CarOptionText>
+              <CarOptionText>{data.name}</CarOptionText>
             </CarOptionList>
           );
         })}
@@ -52,7 +64,11 @@ function HostCarInfo() {
         <TermTitle>
           공유 기간 <span>•</span>
         </TermTitle>
-        <TermValue>2023년 5월 7일 ~ 2023년 6월 3일</TermValue>
+        <TermValue>
+          {dateChange(carData?.startDate) +
+            ' ~ ' +
+            dateChange(carData?.endDate)}
+        </TermValue>
       </TermContainer>
       <TermMessage>
         해당 기간 외에 예약은 불가능하니 참고 바랍니다. <br />
@@ -60,7 +76,7 @@ function HostCarInfo() {
       </TermMessage>
     </HostCarInfoContainer>
   );
-}
+};
 
 const HostCarInfoContainer = styled.div`
   flex: 2;
@@ -68,7 +84,7 @@ const HostCarInfoContainer = styled.div`
 
 const HostName = styled.div`
   font-size: 25px;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 `;
 
 const CarBrandName = styled.div`
@@ -170,7 +186,6 @@ const CarOptionTitle = styled.div`
 
 const CarOptionContainer = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 30px;
   flex-wrap: wrap;
@@ -227,25 +242,3 @@ const TermMessage = styled.div`
 `;
 
 export default HostCarInfo;
-
-const CAR_OPTION = [
-  '매뉴얼 에어컨',
-  '후방모니터',
-  '스마트 트렁크',
-  '스마트키 원격시동',
-  '썬루프',
-  '크루즈 컨트롤',
-  '패들 쉬프트',
-  '차로 이탈방지 보조',
-  '차로 유지 보조',
-  '하이빔 보조',
-  '통합 주행 모드',
-  '열선 시트',
-  'LED 실내등',
-  '전동식 파킹 브레이크',
-  '2열 에어벤트',
-  '오토라이트 컨트롤',
-  '전자식 변속 칼럼',
-  '세이프티 연락',
-  '운전석 전동시트',
-];

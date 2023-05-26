@@ -85,6 +85,7 @@ const ModalContainer = styled.div`
   border-radius: 10px;
   box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
   background-color: #ffffff;
+  z-index: 2;
 `;
 const SingIn = styled.div`
   padding: 19px 15px 15px 15px;

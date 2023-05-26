@@ -65,6 +65,7 @@ const FilterModalContainer = styled.div<{ filtermodal: string }>`
   background-color: #ffffff;
   box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
   overflow-y: scroll;
+  z-index: 2;
 
   &::-webkit-scrollbar {
     width: 0;

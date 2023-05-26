@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import DatePicker from './DatePicker';
 import moment from 'moment';
 
-function BookingBox() {
+interface BookingBoxProps {
+  carData: any;
+}
+
+const BookingBox: React.FC<BookingBoxProps> = ({ carData }) => {
   const [datePickerModal, setDatePickerModal] = useState(false);
   const [startDate, setStartDate] = useState<Date | string>('날짜 추가');
   const [endDate, setEndDate] = useState<Date | string>('날짜 추가');
@@ -16,7 +20,10 @@ function BookingBox() {
       ? moment(endDate).format('YYYY년 MM월 DD일')
       : '날짜 추가';
 
-  console.log(formattedStartDate);
+  const startDateValue = moment(startDate);
+  const endDateValue = moment(endDate);
+  const diffDays = endDateValue.diff(startDateValue, 'days');
+  const DateChecked = startDate !== '날짜 추가' && endDate !== '날짜 추가';
 
   const handleStartDateChange = (date: any) => {
     setStartDate(date);
@@ -40,8 +47,7 @@ function BookingBox() {
         />
       )}
       <PricePerDay>
-        150,000원
-        <span>/일</span>
+        {carData?.pricePerDay?.toLocaleString()}원<span>/일</span>
       </PricePerDay>
       <DateButtonContainer
         onClick={() => {
@@ -59,21 +65,39 @@ function BookingBox() {
       </DateButtonContainer>
       <BookingButton>예약하기</BookingButton>
       <GuideMessage>예약 확정 전에는 요금이 청구되지 않습니다.</GuideMessage>
-      <CalculateContainer>
-        <FlexStart>82,706원 ✕ 5일</FlexStart>
-        <FlexEnd>413,529원</FlexEnd>
-      </CalculateContainer>
-      <CommissionContainer>
-        <FlexStart>위카 서비스 수수료</FlexStart>
-        <FlexEnd>58,385원</FlexEnd>
-      </CommissionContainer>
+      {DateChecked && (
+        <CalculateContainer>
+          <FlexStart>
+            {carData?.pricePerDay?.toLocaleString()}원 ✕ {diffDays}일
+          </FlexStart>
+          <FlexEnd>
+            {(carData?.pricePerDay * diffDays)?.toLocaleString()}원
+          </FlexEnd>
+        </CalculateContainer>
+      )}
+      {DateChecked && (
+        <CommissionContainer>
+          <FlexStart>위카 서비스 수수료</FlexStart>
+          <FlexEnd>
+            {(carData?.pricePerDay * diffDays * 0.05)?.toLocaleString()}원
+          </FlexEnd>
+        </CommissionContainer>
+      )}
       <TotalAmountContainer>
         <TotalAmountTitle>총 합계</TotalAmountTitle>
-        <TotalAmountValue>471,914원</TotalAmountValue>
+        <TotalAmountValue>
+          {diffDays
+            ? (
+                carData?.pricePerDay * diffDays +
+                carData?.pricePerDay * diffDays * 0.05
+              )?.toLocaleString()
+            : 0}
+          원
+        </TotalAmountValue>
       </TotalAmountContainer>
     </BookingBoxContainer>
   );
-}
+};
 
 const BookingBoxContainer = styled.div`
   position: sticky;

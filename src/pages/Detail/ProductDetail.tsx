@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
-import bmwImg1 from '../../assets/detailImg/BMW.jpg';
-import bmwImg2 from '../../assets/detailImg/BMW추가이미지.jpg';
-import bmwImg3 from '../../assets/detailImg/BMW추가이미지1.jpg';
-import bmwImg4 from '../../assets/detailImg/BMW추가이미지2.jpg';
-import bmwImg5 from '../../assets/detailImg/BMW추가이미지3.jpg';
 import BookingBox from './BookingBox';
 import logoImg from '../../assets/mainImg/logoImg.png';
 import Footer from 'pages/Main/Footer';
 import HostCarInfo from './HostCarInfo';
 import Map from './Map';
-
-const BMW_IMAGE = [bmwImg1, bmwImg2, bmwImg3, bmwImg4, bmwImg5];
-const BMW_IMAGE_SUB = BMW_IMAGE.slice(1);
+import axios from 'axios';
+import { HOST_ADDRESS } from '../../HostAddress';
 
 function ProductDetail() {
+  const [carData, setCarDate] = useState<any>();
   const navigate = useNavigate();
+  const params = useParams();
+  const { id } = params;
+
+  useEffect(() => {
+    axios.get(`${HOST_ADDRESS}/cars/${id}`).then(response => {
+      setCarDate(response.data);
+    });
+  }, []);
+
+  console.log(carData);
+
   return (
     <>
       <NavContainer>
@@ -30,27 +36,26 @@ function ProductDetail() {
         />
       </NavContainer>
       <ProductDetailContainer>
-        <CarBrandName>BMW</CarBrandName>
-        <CarModelName>M8 컴페티션 그란 쿠페</CarModelName>
+        <CarBrandName>{carData?.carModel.brand.name}</CarBrandName>
+        <CarModelName>{carData?.carModel.name}</CarModelName>
         <CarImageContainer>
-          <MainCarImage carimage={BMW_IMAGE[0]} />
-          {BMW_IMAGE_SUB.map((image, i) => {
-            return <CarImage key={i} carimage={image} />;
+          <MainCarImage carimage={carData?.files[0].url} />
+          {carData?.files.slice(1).map((data: any) => {
+            return <CarImage key={data.id} carimage={data.url} />;
           })}
         </CarImageContainer>
         <MainSectionContainer>
-          <HostCarInfo />
-          <BookingBox />
+          <HostCarInfo carData={carData} />
+          <BookingBox carData={carData} />
         </MainSectionContainer>
       </ProductDetailContainer>
       <AddressContainer>
         <AddressTitle>
           픽업 / 반납 위치 <span>•</span>
         </AddressTitle>
-        <AddressValue>서울특별시 테헤란로 427 위워크 건물 앞</AddressValue>
+        <AddressValue>{carData?.address}</AddressValue>
       </AddressContainer>
-
-      <Map />
+      <Map carData={carData} />
       <Footer />
     </>
   );

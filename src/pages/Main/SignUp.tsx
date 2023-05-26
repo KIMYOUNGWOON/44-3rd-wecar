@@ -268,6 +268,7 @@ const SignUpContainer = styled.div`
     width: 0;
     height: 0;
   }
+  z-index: 2;
 `;
 
 const Header = styled.div`

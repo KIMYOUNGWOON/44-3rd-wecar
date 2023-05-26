@@ -26,12 +26,8 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // 정상 응답 처리
-    const newAccessToken = response.data.accessToken;
-    const newRefreshToken = response.data.refreshToken;
-    if (newAccessToken && newRefreshToken) {
-      localStorage.setItem('accessToken', newAccessToken);
-      localStorage.setItem('refreshToken', newRefreshToken);
-    }
+    console.log(response);
+
     return response;
   },
   error => {

@@ -12,6 +12,8 @@ interface SearchBarProps {
   searchModal: boolean;
   setSearchModal: React.Dispatch<React.SetStateAction<boolean>>;
   tokenChecked: null | string;
+  searchParams: URLSearchParams;
+  setSearchParams: React.Dispatch<React.SetStateAction<URLSearchParams>>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -20,6 +22,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   searchModal,
   setSearchModal,
   tokenChecked,
+  searchParams,
+  setSearchParams,
 }) => {
   const [modalChange, setModalChange] = useState('region');
   const [regionValue, setRegionValue] = useState('지역 검색');

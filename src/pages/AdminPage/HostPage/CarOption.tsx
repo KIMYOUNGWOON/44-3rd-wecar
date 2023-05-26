@@ -10,11 +10,11 @@ const CarOption: React.FC<CarOptionProps> = ({ carData }) => {
   const { options } = carData;
   return (
     <CarOptionContainer>
-      {options.map((data: any, i: number) => {
+      {options.map((data: any) => {
         return (
-          <CarOptionList key={i}>
+          <CarOptionList key={data.id}>
             <CheckIcon />
-            <CarOptionText>{data}</CarOptionText>
+            <CarOptionText>{data.name}</CarOptionText>
           </CarOptionList>
         );
       })}
