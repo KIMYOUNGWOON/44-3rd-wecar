@@ -20,6 +20,7 @@ const PassengerSearch: React.FC<PassengerSearchProps> = ({
       <PassengerSearchSubTitle>
         승차 인원에 맞는 인승을 선택해주세요
       </PassengerSearchSubTitle>
+      {/* <PassengerNumber type="number" /> */}
       <PassengerChoiceContainer>
         {PASSENGER_DATA.map(data => {
           return (
@@ -52,6 +53,12 @@ const PassengerSearchTitle = styled.div`
 `;
 
 const PassengerSearchSubTitle = styled.div`
+  font-size: 14px;
+  margin-bottom: 40px;
+  color: #29b9ff;
+`;
+
+const PassengerNumber = styled.input`
   font-size: 14px;
   margin-bottom: 40px;
   color: #29b9ff;

@@ -8,6 +8,7 @@ interface ClickSearchProps {
   passengerValue: string;
   formattedStartDate: string;
   formattedEndDate: string;
+  handleSearch: () => void;
 }
 const ClickSearch: React.FC<ClickSearchProps> = ({
   handleSearchModal,
@@ -15,6 +16,7 @@ const ClickSearch: React.FC<ClickSearchProps> = ({
   passengerValue,
   formattedStartDate,
   formattedEndDate,
+  handleSearch,
 }) => {
   const CLICK_SEARCH = [
     { id: 1, title: '지역', subTitle: regionValue },
@@ -49,7 +51,13 @@ const ClickSearch: React.FC<ClickSearchProps> = ({
       })}
       <SearchButtonBox>
         <SearchIcon />
-        <ButtonText>검색</ButtonText>
+        <ButtonText
+          onClick={() => {
+            handleSearch();
+          }}
+        >
+          검색
+        </ButtonText>
       </SearchButtonBox>
     </ClickSearchContainer>
   );

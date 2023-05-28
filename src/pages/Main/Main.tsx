@@ -12,6 +12,7 @@ import ProductList from './ProductList';
 import SignUp from './SignUp';
 import { HOST_ADDRESS } from '../../HostAddress';
 import { useSearchParams } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 const Main: React.FC = () => {
   const [menuModal, setMenuModal] = useState<boolean>(false);
@@ -25,7 +26,6 @@ const Main: React.FC = () => {
     localStorage.getItem('accessToken') || localStorage.getItem('refreshToken');
   const [carList, setCarList] = useState<any>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams.getAll('sort'));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,10 +39,19 @@ const Main: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${HOST_ADDRESS}/cars`).then(response => {
-      setCarList(response.data);
-    });
+    axios
+      .get(`${HOST_ADDRESS}/cars`)
+      .then(response => {
+        setCarList(response.data);
+      })
+      .catch(error => console.log(error));
   }, []);
+
+  function handleSearch() {
+    axios
+      .get(`${HOST_ADDRESS}/cars?address=서울`)
+      .then(reponse => console.log(reponse));
+  }
 
   return (
     <MainContainer>
@@ -55,6 +64,7 @@ const Main: React.FC = () => {
         tokenChecked={tokenChecked}
         searchParams={searchParams}
         setSearchParams={setSearchParams}
+        handleSearch={handleSearch}
       />
       {menuModal && (
         <MenuBlackModal

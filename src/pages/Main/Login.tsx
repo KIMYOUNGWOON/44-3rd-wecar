@@ -35,7 +35,7 @@ const Login: React.FC<LoginProps> = ({ setUserModal, setSuccessModal }) => {
         password,
       })
       .then(response => {
-        if (response.status === 201) {
+        if (response?.status === 201) {
           const newAccessToken = response.data.accessToken;
           const newRefreshToken = response.data.refreshToken;
           localStorage.setItem('accessToken', newAccessToken);
@@ -48,16 +48,16 @@ const Login: React.FC<LoginProps> = ({ setUserModal, setSuccessModal }) => {
         axios
           .get(`${HOST_ADDRESS}/auth/check/${getUserType}`)
           .then(response => {
-            if (response.status === 200) {
+            if (response?.status === 200) {
               localStorage.setItem('userName', response.data.name);
             }
           });
       })
       .catch(error => {
         const { response } = error;
-        if (response.status === 404) {
+        if (response?.status === 404) {
           alert('회원 유형을 확인해주세요.');
-        } else if (response.status === 400) {
+        } else if (response?.status === 400) {
           alert('이메일 또는 비밀번호를 확인해주세요.');
         }
       });

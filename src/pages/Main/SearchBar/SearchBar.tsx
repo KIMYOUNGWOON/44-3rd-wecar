@@ -14,6 +14,7 @@ interface SearchBarProps {
   tokenChecked: null | string;
   searchParams: URLSearchParams;
   setSearchParams: React.Dispatch<React.SetStateAction<URLSearchParams>>;
+  handleSearch: () => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -24,6 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   tokenChecked,
   searchParams,
   setSearchParams,
+  handleSearch,
 }) => {
   const [modalChange, setModalChange] = useState('region');
   const [regionValue, setRegionValue] = useState('지역 검색');
@@ -74,6 +76,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setEndDateValue(date);
   };
 
+  const searchRegion = (region: any) => {
+    searchParams.append('address', region);
+    setSearchParams(searchParams);
+  };
+
   return (
     <SearchContainer tokenchecked={tokenChecked}>
       {searchModal && (
@@ -85,6 +92,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           handleEndDateChange={handleEndDateChange}
           startDateValue={startDateValue}
           endDateValue={endDateValue}
+          searchRegion={searchRegion}
         />
       )}
       {searchMode && (
@@ -102,6 +110,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             passengerValue={passengerValue}
             formattedStartDate={formattedStartDate}
             formattedEndDate={formattedEndDate}
+            handleSearch={handleSearch}
           />
         )}
       </SearchBarContainer>

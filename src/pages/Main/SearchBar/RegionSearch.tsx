@@ -3,9 +3,13 @@ import styled from 'styled-components';
 
 interface RegionSearchProps {
   regionValueChange: (region: string) => void;
+  searchRegion: (region: any) => void;
 }
 
-const RegionSearch: React.FC<RegionSearchProps> = ({ regionValueChange }) => {
+const RegionSearch: React.FC<RegionSearchProps> = ({
+  regionValueChange,
+  searchRegion,
+}) => {
   const [currentId, setCurrentId] = useState(0);
 
   function handleClick(targetId: number): void {
@@ -28,6 +32,7 @@ const RegionSearch: React.FC<RegionSearchProps> = ({ regionValueChange }) => {
               ischecked={(currentId === data.id).toString()}
               onClick={() => {
                 handleClick(data.id);
+                searchRegion(data.region);
                 if (currentId === data.id) {
                   regionValueChange('지역 검색');
                 } else {

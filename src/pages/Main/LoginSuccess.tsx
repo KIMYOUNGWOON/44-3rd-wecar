@@ -46,6 +46,7 @@ const LoginSuccessContainer = styled.div`
   border-radius: 10px;
   box-shadow: 3px 0 15px 0 rgba(0, 0, 0, 0.2);
   text-align: center;
+  z-index: 2;
 `;
 
 const LoginSuccessHeader = styled.div`

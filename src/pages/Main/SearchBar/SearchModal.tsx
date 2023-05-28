@@ -12,6 +12,7 @@ interface SearchModalProps {
   handleEndDateChange: (date: any) => void;
   startDateValue: Date | string;
   endDateValue: Date | string;
+  searchRegion: (region: any) => void;
 }
 
 const SearchModal: React.FC<SearchModalProps> = ({
@@ -22,11 +23,15 @@ const SearchModal: React.FC<SearchModalProps> = ({
   handleEndDateChange,
   startDateValue,
   endDateValue,
+  searchRegion,
 }) => {
   return (
     <SearchModalContainer modalchange={modalChange}>
       {modalChange === 'region' && (
-        <RegionSearch regionValueChange={regionValueChange} />
+        <RegionSearch
+          regionValueChange={regionValueChange}
+          searchRegion={searchRegion}
+        />
       )}
       {modalChange === 'date' && (
         <DateSearch

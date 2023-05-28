@@ -16,6 +16,7 @@ interface NavProps {
   tokenChecked: null | string;
   searchParams: URLSearchParams;
   setSearchParams: React.Dispatch<React.SetStateAction<URLSearchParams>>;
+  handleSearch: () => void;
 }
 
 const Nav: React.FC<NavProps> = ({
@@ -27,6 +28,7 @@ const Nav: React.FC<NavProps> = ({
   tokenChecked,
   searchParams,
   setSearchParams,
+  handleSearch,
 }) => {
   const navigate = useNavigate();
   const userName = localStorage.getItem('userName');
@@ -49,6 +51,7 @@ const Nav: React.FC<NavProps> = ({
         tokenChecked={tokenChecked}
         searchParams={searchParams}
         setSearchParams={setSearchParams}
+        handleSearch={handleSearch}
       />
       <UserContainer>
         <CarSharing
