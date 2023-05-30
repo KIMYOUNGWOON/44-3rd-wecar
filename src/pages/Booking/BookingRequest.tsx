@@ -5,6 +5,10 @@ import PaymentMethod from './PaymentMethod';
 import { TbCalendarTime } from 'react-icons/tb';
 import moment from 'moment';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
+import axios from 'axios';
+import { HOST_ADDRESS } from '../../HostAddress';
+import { useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 
 interface BookingRequestProps {
   bookingData: any;
@@ -12,6 +16,9 @@ interface BookingRequestProps {
 
 const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const params = useParams();
+  const { id } = params;
+  const navigate = useNavigate();
   function KoreanDateChange(date: Date | undefined) {
     const dateObj = moment(date).utcOffset('12:00');
     const koreanDate = dateObj.format('YYYY년 MM월 DD일');
@@ -39,7 +46,12 @@ const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
         paymentOptions
       );
       console.log(paymentResult);
-      // 결제 성공 처리 로직 작성
+      axios
+        .post(`${HOST_ADDRESS}/payments/toss`, paymentResult)
+        .then(response => console.log(response))
+        .then(() => {
+          navigate(`/success/${id}`);
+        });
     } catch (error) {
       console.error(error);
       // 결제 실패 처리 로직 작성

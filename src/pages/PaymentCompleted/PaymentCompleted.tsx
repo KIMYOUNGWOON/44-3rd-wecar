@@ -142,7 +142,7 @@ const ModelName = styled.div`
 `;
 
 const CheckIcon = styled(BsCalendarCheck)`
-  font-size: 80px;
+  font-size: 70px;
   color: #29b9ff;
 `;
 
