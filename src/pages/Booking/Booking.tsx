@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import logoImg from '../../assets/mainImg/logoImg.png';
@@ -6,9 +6,25 @@ import BookingRequest from './BookingRequest';
 import RateDetails from './RateDetails';
 import { IoIosArrowBack } from 'react-icons/io';
 import Footer from 'pages/Main/Footer';
+import { useParams } from 'react-router';
+import axios from 'axios';
+import { HOST_ADDRESS } from '../../HostAddress';
 
 function Booking() {
+  const [bookingData, setBookingData] = useState({});
   const navigate = useNavigate();
+  const params = useParams();
+  const { id } = params;
+
+  useEffect(() => {
+    axios
+      .get(`${HOST_ADDRESS}/bookings/${id}`)
+      .then(response => setBookingData(response.data))
+      .catch(error => console.error(error));
+  }, []);
+
+  console.log(bookingData);
+
   return (
     <BookingContainer>
       <NavContainer>
@@ -29,8 +45,8 @@ function Booking() {
       />
       <BookingRequestText>예약 요청</BookingRequestText>
       <MainSection>
-        <BookingRequest />
-        <RateDetails />
+        <BookingRequest bookingData={bookingData} />
+        <RateDetails bookingData={bookingData} />
       </MainSection>
       <Footer />
     </BookingContainer>

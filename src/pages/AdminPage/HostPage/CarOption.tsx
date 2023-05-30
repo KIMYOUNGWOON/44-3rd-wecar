@@ -26,7 +26,7 @@ const CarOptionContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 30px;
+  gap: 15px;
   flex-wrap: wrap;
   height: 260px;
   margin-bottom: 40px;

@@ -13,7 +13,7 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({ carData }) => {
   const [map, setMap] = useState<any | null>(null);
-  const MarkAddress = carData ? carData.address.slice(6) : null;
+  const MarkAddress = carData ? carData?.address?.slice(6) : null;
 
   useEffect(() => {
     const container = document.getElementById('map');

@@ -2,8 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import moment from 'moment';
 
 interface DatePickerProps {
+  carData: any;
   startDate: Date | string;
   setStartDate: React.Dispatch<React.SetStateAction<string | Date>>;
   endDate: Date | string;
@@ -14,6 +16,7 @@ interface DatePickerProps {
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({
+  carData,
   startDate,
   setStartDate,
   endDate,
@@ -22,7 +25,12 @@ const DatePicker: React.FC<DatePickerProps> = ({
   handleEndDateChange,
   setDatePickerModal,
 }) => {
-  const today = new Date();
+  const minStartDate = new Date(carData.startDate);
+  const maxEndDate = new Date(carData.endDate);
+  const convertedStartDate = moment(minStartDate).utcOffset('-12:00');
+  const convertedEndDate = moment(maxEndDate).utcOffset('-12:00');
+  const koreanStartDate = convertedStartDate.format('YYYY-MM-DD');
+  const koreanEndDate = convertedEndDate.format('YYYY-MM-DD');
 
   return (
     <DatePickerContainer>
@@ -34,12 +42,14 @@ const DatePicker: React.FC<DatePickerProps> = ({
         <Calendar
           onChange={handleStartDateChange}
           value={startDate === '날짜 추가' ? null : startDate}
-          minDate={today}
+          minDate={new Date(koreanStartDate)}
+          maxDate={new Date(koreanEndDate)}
         />
         <Calendar
           onChange={handleEndDateChange}
           value={endDate === '날짜 추가' ? null : endDate}
-          minDate={today}
+          minDate={new Date(koreanStartDate)}
+          maxDate={new Date(koreanEndDate)}
         />
       </CalendarContainer>
       <ButtonContainer>
@@ -65,8 +75,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
 const DatePickerContainer = styled.div`
   position: absolute;
-  top: 34%;
-  right: 5%;
+  top: 0%;
+  right: 105%;
   padding: 30px;
   background-color: #ffffff;
   border-radius: 15px;
@@ -94,9 +104,9 @@ const ButtonContainer = styled.div`
 `;
 
 const ResetButton = styled.div`
-  padding: 10px 15px;
+  padding: 13px 15px 10px;
   border-radius: 10px;
-  font-size: 17px;
+  font-size: 16px;
   background-color: #29b9ff;
   color: #ffffff;
   &:hover {
@@ -104,22 +114,14 @@ const ResetButton = styled.div`
   }
 `;
 
-const CloseButton = styled.div`
-  padding: 10px 15px;
-  border-radius: 10px;
-  font-size: 17px;
-  background-color: #29b9ff;
-  color: #ffffff;
-  &:hover {
-    cursor: pointer;
-  }
-`;
+const CloseButton = styled(ResetButton)``;
 
 const CalendarContainer = styled.div`
   display: flex;
   gap: 30px;
   .react-calendar {
     width: 380px;
+    height: 306px;
     max-width: 100%;
     background-color: #fff;
     color: #222;

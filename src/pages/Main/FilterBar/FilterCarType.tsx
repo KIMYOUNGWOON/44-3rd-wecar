@@ -7,23 +7,29 @@ import vanImg from '../../../assets/carTypeImg/승합차.jpg';
 import { CAR_TYPE } from './FilterModal';
 
 interface FilterCarTypeProps {
-  carTypeId: number;
-  setCarTypeId: React.Dispatch<React.SetStateAction<number>>;
+  carType: string;
+  setCarType: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CAR_IMAGE = [compactCarImg, sedanImg, suvImg, vanImg];
+const CAR_TYPE_IMAGE: any = {
+  경차: compactCarImg,
+  승용차: sedanImg,
+  SUV: suvImg,
+  승합차: vanImg,
+};
 
 const FilterCarType: React.FC<FilterCarTypeProps> = ({
-  carTypeId,
-  setCarTypeId,
+  carType,
+  setCarType,
 }) => {
-  function CheckingCarType(targetId: number) {
-    if (carTypeId === targetId) {
-      setCarTypeId(0);
+  function handleCarType(type: string) {
+    if (carType === type) {
+      setCarType('');
     } else {
-      setCarTypeId(targetId);
+      setCarType(type);
     }
   }
+
   return (
     <FilterCarTypeContainer>
       <SelectContainer>
@@ -36,9 +42,9 @@ const FilterCarType: React.FC<FilterCarTypeProps> = ({
             return (
               <SelectBtn
                 key={data.id}
-                clicked={(carTypeId === data.id).toString()}
+                clicked={(carType === data.carType).toString()}
                 onClick={() => {
-                  CheckingCarType(data.id);
+                  handleCarType(data.carType);
                 }}
               >
                 {data.carType}
@@ -49,10 +55,10 @@ const FilterCarType: React.FC<FilterCarTypeProps> = ({
         <CarTypeDescription />
       </SelectContainer>
       <CarTypeImageContainer>
-        {carTypeId === 0 ? (
+        {carType === '' ? (
           <NotSelectText>선택 안 함</NotSelectText>
         ) : (
-          <CarTypeImage carimage={CAR_IMAGE[carTypeId - 1]} />
+          <CarTypeImage carimage={CAR_TYPE_IMAGE[carType]} />
         )}
       </CarTypeImageContainer>
     </FilterCarTypeContainer>
@@ -85,9 +91,10 @@ const CarTypeDescription = styled.div`
 `;
 
 const NotSelectText = styled.div`
-  font-size: 30px;
+  font-size: 25px;
   text-align: center;
   padding-right: 20px;
+  color: rgba(0, 0, 0, 0.5);
 `;
 
 const SelectBtnContainer = styled.div`

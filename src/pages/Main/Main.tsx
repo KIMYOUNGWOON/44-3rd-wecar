@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { HOST_ADDRESS } from '../../HostAddress';
 import styled from 'styled-components';
 import FilterBar from './FilterBar/FilterBar';
 import FilterModal from './FilterBar/FilterModal';
@@ -10,9 +12,6 @@ import MenuModal from './MenuModal';
 import Nav from './Nav';
 import ProductList from './ProductList';
 import SignUp from './SignUp';
-import { HOST_ADDRESS } from '../../HostAddress';
-import { useSearchParams } from 'react-router-dom';
-import { useLocation } from 'react-router';
 
 const Main: React.FC = () => {
   const [menuModal, setMenuModal] = useState<boolean>(false);
@@ -26,6 +25,7 @@ const Main: React.FC = () => {
     localStorage.getItem('accessToken') || localStorage.getItem('refreshToken');
   const [carList, setCarList] = useState<any>([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const queryString = searchParams.toString();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,22 +36,16 @@ const Main: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     axios
-      .get(`${HOST_ADDRESS}/cars`)
+      .get(`${HOST_ADDRESS}/cars?${queryString}`)
       .then(response => {
         setCarList(response.data);
       })
-      .catch(error => console.log(error));
-  }, []);
-
-  function handleSearch() {
-    axios
-      .get(`${HOST_ADDRESS}/cars?address=서울`)
-      .then(reponse => console.log(reponse));
-  }
+      .catch(error => console.error(error));
+  }, [queryString]);
 
   return (
     <MainContainer>
@@ -62,9 +56,6 @@ const Main: React.FC = () => {
         searchModal={searchModal}
         setSearchModal={setSearchModal}
         tokenChecked={tokenChecked}
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-        handleSearch={handleSearch}
       />
       {menuModal && (
         <MenuBlackModal

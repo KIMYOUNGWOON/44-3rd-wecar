@@ -10,14 +10,14 @@ import axios from 'axios';
 import { HOST_ADDRESS } from '../../HostAddress';
 
 function ProductDetail() {
-  const [carData, setCarDate] = useState<any>();
+  const [carData, setCarData] = useState<any>({});
   const navigate = useNavigate();
   const params = useParams();
   const { id } = params;
 
   useEffect(() => {
     axios.get(`${HOST_ADDRESS}/cars/${id}`).then(response => {
-      setCarDate(response.data);
+      setCarData(response.data);
     });
   }, []);
 
@@ -36,14 +36,27 @@ function ProductDetail() {
         />
       </NavContainer>
       <ProductDetailContainer>
-        <CarBrandName>{carData?.carModel.brand.name}</CarBrandName>
-        <CarModelName>{carData?.carModel.name}</CarModelName>
-        <CarImageContainer>
-          <MainCarImage carimage={carData?.files[0].url} />
-          {carData?.files.slice(1).map((data: any) => {
-            return <CarImage key={data.id} carimage={data.url} />;
-          })}
-        </CarImageContainer>
+        <ProductDetailHeader>
+          <BrandModelNameBox>
+            {carData.carModel && (
+              <CarBrandName>{carData.carModel.brand.name}</CarBrandName>
+            )}
+            {carData.carModel && (
+              <CarModelName>{carData.carModel.name}</CarModelName>
+            )}
+          </BrandModelNameBox>
+          <SideInfo>
+            ★ 4.97 <span>(후기 252개)</span> • ⚑ <span>슈퍼호스트</span>
+          </SideInfo>
+        </ProductDetailHeader>
+        {carData.files && (
+          <CarImageContainer>
+            <MainCarImage carimage={carData.files[0].url} />
+            {carData?.files.slice(1).map((data: any) => {
+              return <CarImage key={data.id} carimage={data.url} />;
+            })}
+          </CarImageContainer>
+        )}
         <MainSectionContainer>
           <HostCarInfo carData={carData} />
           <BookingBox carData={carData} />
@@ -83,17 +96,37 @@ const ProductDetailContainer = styled.div`
   width: 1200px;
   margin: 140px auto 0;
 `;
+
+const ProductDetailHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const BrandModelNameBox = styled.div``;
+
 const CarBrandName = styled.div`
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   font-size: 30px;
   font-weight: 600;
 `;
 const CarModelName = styled.div`
-  margin-bottom: 20px;
   padding-left: 1px;
   font-size: 20px;
   color: rgba(0, 0, 0, 0.6);
 `;
+
+const SideInfo = styled.div`
+  padding-bottom: 25px;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 1);
+  margin-top: 65px;
+  span {
+    color: rgba(0, 0, 0, 0.6);
+    margin-left: 5px;
+  }
+`;
+
 const CarImageContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 292px);
@@ -119,14 +152,18 @@ const MainSectionContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 90px;
   width: 100%;
   margin-top: 60px;
-  gap: 90px;
+  padding-top: 60px;
+  padding-bottom: 70px;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const AddressContainer = styled.div`
   width: 1200px;
-  margin: 130px auto 30px;
+  margin: 70px auto 30px;
 `;
 
 const AddressTitle = styled.div`

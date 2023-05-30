@@ -1,42 +1,98 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import carImage from '../../assets/mainImg/carImage.png';
 import PaymentMethod from './PaymentMethod';
 import { TbCalendarTime } from 'react-icons/tb';
+import moment from 'moment';
+import { loadTossPayments } from '@tosspayments/payment-sdk';
 
-function BookingRequest() {
+interface BookingRequestProps {
+  bookingData: any;
+}
+
+const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
+  const [paymentMethod, setPaymentMethod] = useState('card');
+  function KoreanDateChange(date: Date | undefined) {
+    const dateObj = moment(date).utcOffset('12:00');
+    const koreanDate = dateObj.format('YYYY년 MM월 DD일');
+
+    return koreanDate;
+  }
+
+  const clientKey = 'test_ck_qLlDJaYngroZNAo1AWXVezGdRpXx'; // 발급받은 토스 결제 클라이언트 키
+
+  const handlePayment = async () => {
+    try {
+      const tossPayments = await loadTossPayments(clientKey);
+
+      const paymentOptions = {
+        amount: bookingData.totalPrice, // 결제할 금액
+        orderId: bookingData.uuid, // 상품 주문번호
+        orderName: bookingData.hostCar.carModel.name,
+        customerName: bookingData.user.name,
+        // successUrl: 'https://example.com/success', // 결제 성공 후 redirect할 URL
+        // failUrl: 'https://example.com/fail', // 결제 실패 시 redirect할 URL
+      };
+
+      const paymentResult = await tossPayments.requestPayment(
+        '카드',
+        paymentOptions
+      );
+      console.log(paymentResult);
+      // 결제 성공 처리 로직 작성
+    } catch (error) {
+      console.error(error);
+      // 결제 실패 처리 로직 작성
+    }
+  };
+
   return (
     <BookingRequestContainer>
       <HookingBox>
         <HookingTextArea>
           <HookingTitle>흔치 않은 기회입니다.</HookingTitle>
           <HookingContent>
-            OOO님의 차량은 보통 예약이 가득 차 있습니다.
+            해당 차량은 보통 예약이 가득 차 있습니다.
           </HookingContent>
         </HookingTextArea>
         <HookingImage carimage={carImage} />
       </HookingBox>
-      <BookingInfoTitle>예약 정보</BookingInfoTitle>
+      <BookingInfoTitle>
+        예약 정보 <span>•</span>
+      </BookingInfoTitle>
       <BookingDateBox>
         <DateTitle>예약 날짜</DateTitle>
-        <DateValue>2023년 5월 27일 ~ 2023년 6월 3일</DateValue>
+        <DateValue>
+          {KoreanDateChange(bookingData.startDate) +
+            ' ~ ' +
+            KoreanDateChange(bookingData.endDate)}
+        </DateValue>
       </BookingDateBox>
-      <PaymentMethod />
+      <PaymentMethod
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+      />
       <RequiredInputContainer>
-        <RequiredInputTitle>필수 입력 정보</RequiredInputTitle>
+        <RequiredInputTitle>
+          필수 입력 정보 <span>•</span>
+        </RequiredInputTitle>
         <MessageTitle>호스트에게 메시지 보내기</MessageTitle>
         <MessageContent>
           호스트에게 이용 목적과 픽업 예정 시간을 알려주세요.
         </MessageContent>
         <MessageInputBox />
       </RequiredInputContainer>
-      <ReturnPolicyTitle>환불 정책</ReturnPolicyTitle>
+      <ReturnPolicyTitle>
+        환불 정책 <span>•</span>
+      </ReturnPolicyTitle>
       <ReturnPolicyContent>
         00월 00일 오후 12:00 전에 취소하면 부분 환불을 받으실 수 있습니다. 그
         이후에는 취소 시점에 따라 환불액이 결정됩니다.
         <span>자세히 알아보기</span>
       </ReturnPolicyContent>
-      <BasicRulesTitle>기본 규칙</BasicRulesTitle>
+      <BasicRulesTitle>
+        기본 규칙 <span>•</span>
+      </BasicRulesTitle>
       <BasicRulesContent>
         훌륭한 게스트가 되기 위한 몇 가지 간단한 규칙을 지켜주실 것을 모든
         게스트에게 당부드리고 있습니다.
@@ -58,10 +114,18 @@ function BookingRequest() {
         수 있다는 사실에 동의하는 것입니다. 호스트가 예약 요청을 수락하면 표시된
         총액이 결제되는 데 동의합니다.
       </Agreeinfo>
-      <BookingRequestBtn>예약 요청</BookingRequestBtn>
+      <BookingRequestBtn
+        onClick={() => {
+          if (paymentMethod === 'toss') {
+            handlePayment();
+          }
+        }}
+      >
+        예약 요청
+      </BookingRequestBtn>
     </BookingRequestContainer>
   );
-}
+};
 
 const BookingRequestContainer = styled.div`
   width: 560px;
@@ -104,6 +168,10 @@ const HookingImage = styled.div<{ carimage: string }>`
 const BookingInfoTitle = styled.div`
   font-size: 25px;
   margin-bottom: 25px;
+
+  span {
+    color: #fa545c;
+  }
 `;
 
 const BookingDateBox = styled.div`
@@ -133,6 +201,9 @@ const RequiredInputContainer = styled.div`
 const RequiredInputTitle = styled.div`
   font-size: 25px;
   margin-bottom: 25px;
+  span {
+    color: #fa545c;
+  }
 `;
 
 const MessageTitle = styled.div`
@@ -157,6 +228,9 @@ const MessageInputBox = styled.textarea`
 const ReturnPolicyTitle = styled.div`
   font-size: 25px;
   margin-bottom: 25px;
+  span {
+    color: #fa545c;
+  }
 `;
 
 const ReturnPolicyContent = styled.div`
@@ -178,6 +252,9 @@ const ReturnPolicyContent = styled.div`
 const BasicRulesTitle = styled.div`
   font-size: 25px;
   margin-bottom: 25px;
+  span {
+    color: #fa545c;
+  }
 `;
 
 const BasicRulesContent = styled.div`
@@ -216,6 +293,7 @@ const ReservationInfoContent = styled.div`
 
 const Agreeinfo = styled.div`
   margin-bottom: 35px;
+  line-height: 1.5;
   font-size: 13px;
   color: rgba(0, 0, 0, 0.7);
   span {

@@ -7,30 +7,36 @@ import RegionSearch from './RegionSearch';
 interface SearchModalProps {
   modalChange: string;
   regionValueChange: (region: string) => void;
-  passengerValueChange: (passenger: string) => void;
   handleStartDateChange: (date: any) => void;
   handleEndDateChange: (date: any) => void;
+  regionValue: string;
   startDateValue: Date | string;
+  setStartDateValue: React.Dispatch<React.SetStateAction<string | Date>>;
   endDateValue: Date | string;
-  searchRegion: (region: any) => void;
+  setEndDateValue: React.Dispatch<React.SetStateAction<string | Date>>;
+  passengerValue: number;
+  setPassengerValue: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const SearchModal: React.FC<SearchModalProps> = ({
   modalChange,
   regionValueChange,
-  passengerValueChange,
   handleStartDateChange,
   handleEndDateChange,
+  regionValue,
   startDateValue,
+  setStartDateValue,
   endDateValue,
-  searchRegion,
+  setEndDateValue,
+  passengerValue,
+  setPassengerValue,
 }) => {
   return (
     <SearchModalContainer modalchange={modalChange}>
       {modalChange === 'region' && (
         <RegionSearch
+          regionValue={regionValue}
           regionValueChange={regionValueChange}
-          searchRegion={searchRegion}
         />
       )}
       {modalChange === 'date' && (
@@ -38,11 +44,16 @@ const SearchModal: React.FC<SearchModalProps> = ({
           handleStartDateChange={handleStartDateChange}
           handleEndDateChange={handleEndDateChange}
           startDateValue={startDateValue}
+          setStartDateValue={setStartDateValue}
           endDateValue={endDateValue}
+          setEndDateValue={setEndDateValue}
         />
       )}
       {modalChange === 'passenger' && (
-        <PassengerSearch passengerValueChange={passengerValueChange} />
+        <PassengerSearch
+          passengerValue={passengerValue}
+          setPassengerValue={setPassengerValue}
+        />
       )}
     </SearchModalContainer>
   );

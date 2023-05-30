@@ -1,32 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-function FilterKeyInfo() {
-  const [carSizeId, setCarSizeId] = useState(0);
-  const [passengersId, setPassengersId] = useState(0);
-  const [fuelTypeId, setFuelTypeId] = useState(0);
+interface FilterKeyInfoProps {
+  engineSize: string;
+  setEngineSize: React.Dispatch<React.SetStateAction<string>>;
+  capacity: string;
+  setCapacity: React.Dispatch<React.SetStateAction<string>>;
+  fuelType: string;
+  setFuelType: React.Dispatch<React.SetStateAction<string>>;
+}
 
-  function CheckingCarSize(targetId: number) {
-    if (carSizeId === targetId) {
-      setCarSizeId(0);
+const FilterKeyInfo: React.FC<FilterKeyInfoProps> = ({
+  engineSize,
+  setEngineSize,
+  capacity,
+  setCapacity,
+  fuelType,
+  setFuelType,
+}) => {
+  function handleEngineSize(size: string) {
+    if (engineSize === size) {
+      setEngineSize('');
     } else {
-      setCarSizeId(targetId);
+      setEngineSize(size);
     }
   }
 
-  function CheckingPassengers(targetId: number) {
-    if (passengersId === targetId) {
-      setPassengersId(0);
+  function handleCapacity(People: string) {
+    if (capacity === People) {
+      setCapacity('');
     } else {
-      setPassengersId(targetId);
+      setCapacity(People);
     }
   }
 
-  function CheckingFuelType(targetId: number) {
-    if (fuelTypeId === targetId) {
-      setFuelTypeId(0);
+  function handleFuelType(type: string) {
+    if (fuelType === type) {
+      setFuelType('');
     } else {
-      setFuelTypeId(targetId);
+      setFuelType(type);
     }
   }
 
@@ -40,11 +52,11 @@ function FilterKeyInfo() {
             <CarSizeList
               key={data.id}
               onClick={() => {
-                CheckingCarSize(data.id);
+                handleEngineSize(data.size);
               }}
-              checked={carSizeId === data.id}
+              checked={engineSize === data.size}
             >
-              {data.listName}
+              {data.size}
             </CarSizeList>
           );
         })}
@@ -56,11 +68,11 @@ function FilterKeyInfo() {
             <PassengersList
               key={data.id}
               onClick={() => {
-                CheckingPassengers(data.id);
+                handleCapacity(data.capacity);
               }}
-              checked={passengersId === data.id}
+              checked={capacity === data.capacity}
             >
-              {data.listName}
+              {data.capacity}인승
             </PassengersList>
           );
         })}
@@ -72,18 +84,18 @@ function FilterKeyInfo() {
             <FuelTypeList
               key={data.id}
               onClick={() => {
-                CheckingFuelType(data.id);
+                handleFuelType(data.type);
               }}
-              checked={fuelTypeId === data.id}
+              checked={fuelType === data.type}
             >
-              {data.listName}
+              {data.type}
             </FuelTypeList>
           );
         })}
       </FuelTypeContainer>
     </FilterKeyInfoContainer>
   );
-}
+};
 
 const FilterKeyInfoContainer = styled.div`
   padding: 40px;
@@ -137,21 +149,21 @@ const FuelTypeList = styled(CarSizeList)<{ checked: boolean }>``;
 export default FilterKeyInfo;
 
 const CAR_SIZE = [
-  { id: 1, listName: '소형' },
-  { id: 2, listName: '중형' },
-  { id: 3, listName: '대형' },
+  { id: 1, size: '소형' },
+  { id: 2, size: '중형' },
+  { id: 3, size: '대형' },
 ];
 
 const PASSENGERS = [
-  { id: 1, listName: '4인승' },
-  { id: 2, listName: '5인승' },
-  { id: 3, listName: '7인승' },
-  { id: 4, listName: '9인승' },
+  { id: 1, capacity: '4' },
+  { id: 2, capacity: '6' },
+  { id: 3, capacity: '8' },
+  { id: 4, capacity: '10' },
 ];
 
 const FUEL_TYPE = [
-  { id: 1, listName: '가솔린' },
-  { id: 2, listName: '디젤' },
-  { id: 3, listName: '하이브리드' },
-  { id: 4, listName: 'EV' },
+  { id: 1, type: '가솔린' },
+  { id: 2, type: '디젤' },
+  { id: 3, type: '하이브리드' },
+  { id: 4, type: 'EV' },
 ];

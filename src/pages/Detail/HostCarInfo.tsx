@@ -17,9 +17,13 @@ const HostCarInfo: React.FC<HostCarInfoProps> = ({ carData }) => {
 
   return (
     <HostCarInfoContainer>
-      <HostName>{carData?.host.name} 님이 호스팅하는 차량</HostName>
-      <CarBrandName>{carData?.carModel.brand.name}</CarBrandName>
-      <CarModelName>{carData?.carModel.name}</CarModelName>
+      <HostName>{carData?.host?.name} 님이 호스팅하는 차량</HostName>
+      {carData.carModel && (
+        <CarBrandName>{carData?.carModel.brand.name}</CarBrandName>
+      )}
+      {carData.carModel && (
+        <CarModelName>{carData?.carModel.name}</CarModelName>
+      )}
       <CarNumberTitle>
         차량 번호 <span>•</span>
       </CarNumberTitle>
@@ -32,34 +36,38 @@ const HostCarInfo: React.FC<HostCarInfoProps> = ({ carData }) => {
       <KeyInfoContainer>
         <Appearance>
           <Key>외형</Key>
-          <Value>{carData?.carModel.carType.name}</Value>
+          {carData.carModel && <Value>{carData?.carModel.carType.name}</Value>}
         </Appearance>
         <ReleaseDate>
           <Key>차종</Key>
-          <Value>{carData?.carModel.engineSize.name}</Value>
+          {carData.carModel && (
+            <Value>{carData?.carModel.engineSize.name}</Value>
+          )}
         </ReleaseDate>
         <Color>
           <Key>승차 정원</Key>
-          <Value>{carData?.carModel.capacity}인승</Value>
+          {carData.carModel && <Value>{carData?.carModel.capacity}인승</Value>}
         </Color>
         <SellingPrice>
           <Key>연류 유형</Key>
-          <Value>{carData?.fuelType.name}</Value>
+          <Value>{carData?.fuelType?.name}</Value>
         </SellingPrice>
       </KeyInfoContainer>
       <CarOptionTitle>
         차량 옵션 <span>•</span>
       </CarOptionTitle>
-      <CarOptionContainer>
-        {carData?.options.map((data: any) => {
-          return (
-            <CarOptionList key={data.id}>
-              <CheckIcon />
-              <CarOptionText>{data.name}</CarOptionText>
-            </CarOptionList>
-          );
-        })}
-      </CarOptionContainer>
+      {carData.options && (
+        <CarOptionContainer>
+          {carData?.options.map((data: any) => {
+            return (
+              <CarOptionList key={data.id}>
+                <CheckIcon />
+                <CarOptionText>{data.name}</CarOptionText>
+              </CarOptionList>
+            );
+          })}
+        </CarOptionContainer>
+      )}
       <TermContainer>
         <TermTitle>
           공유 기간 <span>•</span>
@@ -98,7 +106,7 @@ const CarModelName = styled.div`
   margin-bottom: 40px;
   padding-bottom: 15px;
   padding-left: 2px;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   line-height: 17px;
   font-size: 14px;
   color: rgba(34, 34, 34, 0.8);
@@ -112,7 +120,7 @@ const CarNumberContainer = styled.div`
   width: 100%;
   height: 60px;
   margin-bottom: 40px;
-  border: 1px solid #ebebeb;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 `;
 
@@ -146,8 +154,8 @@ const KeyInfoContainer = styled.div`
   width: 100%;
   margin-bottom: 40px;
   padding: 20px 0;
-  border-top: 1px solid #ebebeb;
-  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const Appearance = styled.div`
@@ -190,8 +198,8 @@ const CarOptionContainer = styled.div`
   gap: 30px;
   flex-wrap: wrap;
   margin-bottom: 40px;
-  border-top: 1px solid #ebebeb;
-  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   padding: 20px 0;
 `;
 
@@ -215,8 +223,8 @@ const TermContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 25px 0;
-  border-top: 1px solid #ebebeb;
-  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   padding: 20px 0;
 `;
 

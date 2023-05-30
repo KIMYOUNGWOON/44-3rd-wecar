@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import FilterBrand from './FilterBrand';
 import FilterCarOption from './FilterCarOption';
@@ -23,7 +24,81 @@ const FilterModal: React.FC<FilterModalProps> = ({
   filterModal,
   setFilterModal,
 }) => {
-  const [carTypeId, setCarTypeId] = useState(1);
+  const [carType, setCarType] = useState('');
+  const [minValue, setMinValue] = useState(20000);
+  const [maxValue, setMaxValue] = useState(300000);
+  const [brandValue, setBrandValue] = useState('');
+  const [engineSize, setEngineSize] = useState('');
+  const [capacity, setCapacity] = useState('');
+  const [fuelType, setFuelType] = useState('');
+  const [carOption, setCarOption] = useState<string[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  function handleFiltering() {
+    if (carType !== '') {
+      searchParams.set('carType', carType);
+    } else {
+      searchParams.delete('carType');
+    }
+
+    if (minValue !== 20000) {
+      searchParams.set('minPrice', minValue.toString());
+    } else {
+      searchParams.delete('minPrice');
+    }
+
+    if (maxValue !== 300000) {
+      searchParams.set('maxPrice', maxValue.toString());
+    } else {
+      searchParams.delete('maxPrice');
+    }
+
+    if (brandValue !== '') {
+      searchParams.set('brand', brandValue);
+    } else {
+      searchParams.delete('brand');
+    }
+
+    if (engineSize !== '') {
+      searchParams.set('engineSize', engineSize);
+    } else {
+      searchParams.delete('engineSize');
+    }
+
+    if (capacity !== '') {
+      searchParams.set('capacity', capacity);
+    } else {
+      searchParams.delete('capacity');
+    }
+
+    if (fuelType !== '') {
+      searchParams.set('fuelType', fuelType);
+    } else {
+      searchParams.delete('fuelType');
+    }
+
+    if (carOption.length !== 0) {
+      searchParams.delete('options');
+      carOption.forEach(option => {
+        searchParams.append('options', option);
+      });
+    } else {
+      searchParams.delete('options');
+    }
+
+    setSearchParams(searchParams);
+  }
+
+  function fullReset() {
+    setCarType('');
+    setMinValue(20000);
+    setMaxValue(300000);
+    setBrandValue('');
+    setEngineSize('');
+    setCapacity('');
+    setFuelType('');
+    setCarOption([]);
+  }
 
   return (
     <FilterModalContainer filtermodal={filterModal.toString()}>
@@ -38,15 +113,35 @@ const FilterModal: React.FC<FilterModalProps> = ({
         </ModalCloseBtn>
         <FilterTitle>필터</FilterTitle>
       </FilterModalHeader>
-      <FilterCarType carTypeId={carTypeId} setCarTypeId={setCarTypeId} />
+      <FilterCarType carType={carType} setCarType={setCarType} />
       <PriceGraph />
-      <PriceSlider />
-      <FilterBrand />
-      <FilterKeyInfo />
-      <FilterCarOption />
+      <PriceSlider
+        minValue={minValue}
+        setMinValue={setMinValue}
+        maxValue={maxValue}
+        setMaxValue={setMaxValue}
+      />
+      <FilterBrand brandValue={brandValue} setBrandValue={setBrandValue} />
+      <FilterKeyInfo
+        engineSize={engineSize}
+        setEngineSize={setEngineSize}
+        capacity={capacity}
+        setCapacity={setCapacity}
+        fuelType={fuelType}
+        setFuelType={setFuelType}
+      />
+      <FilterCarOption carOption={carOption} setCarOption={setCarOption} />
       <FilterModalFooter>
-        <FullReset>전체 해제</FullReset>
-        <FilterButton>차량 32개 보기</FilterButton>
+        <FullReset onClick={fullReset}>전체 해제</FullReset>
+        <FilterButton
+          onClick={() => {
+            handleFiltering();
+            setFilterModal(false);
+            window.document.body.style.overflowY = 'scroll';
+          }}
+        >
+          차량 보기 {'>'}
+        </FilterButton>
       </FilterModalFooter>
     </FilterModalContainer>
   );

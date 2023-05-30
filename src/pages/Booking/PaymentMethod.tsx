@@ -3,9 +3,16 @@ import styled from 'styled-components';
 import { SiVisa } from 'react-icons/si';
 import { GrAmex } from 'react-icons/gr';
 import { BsCreditCard2Back } from 'react-icons/bs';
-import { RiCheckLine } from 'react-icons/ri';
 
-function PaymentMethod() {
+interface PaymentMethodProps {
+  paymentMethod: string;
+  setPaymentMethod: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const PaymentMethod: React.FC<PaymentMethodProps> = ({
+  paymentMethod,
+  setPaymentMethod,
+}) => {
   const [selectModal, setSelectModal] = useState(false);
   const [rotation, setRotation] = useState(0);
 
@@ -24,7 +31,9 @@ function PaymentMethod() {
   return (
     <PaymentMethodContainer>
       <PaymentMethodHeader>
-        <PaymentMethodTitle>결제 수단</PaymentMethodTitle>
+        <PaymentMethodTitle>
+          결제 수단 <span>•</span>
+        </PaymentMethodTitle>
         <IconContainer>
           <VisaIcon />
           <AmexIcon />
@@ -33,8 +42,16 @@ function PaymentMethod() {
       </PaymentMethodHeader>
       <SelectBox>
         <IconTextContainer>
-          <CardIcon />
-          <SelectBoxText>신용카드 또는 체크카드</SelectBoxText>
+          {paymentMethod === 'card' ? (
+            <CardIcon />
+          ) : (
+            <TossIcon src="https://static.toss-internal.com/ipd-tcs/toss_core/live/428a6ee6-a3b9-41eb-bf36-06e4c2568cc9" />
+          )}
+          {paymentMethod === 'card' ? (
+            <SelectBoxText>신용카드 또는 체크카드</SelectBoxText>
+          ) : (
+            <TossText>토스</TossText>
+          )}
         </IconTextContainer>
         <ArrowIcon
           rotation={rotation}
@@ -46,29 +63,44 @@ function PaymentMethod() {
           ⌵
         </ArrowIcon>
       </SelectBox>
-      <SelectListBox
+      <SelectCardBox
         selectmodal={selectModal.toString()}
         onClick={() => {
           handleSelectModal();
           handleRotation();
+          setPaymentMethod('card');
         }}
       >
         <IconTextContainer>
           <CardIcon />
           <SelectBoxText>신용카드 또는 체크카드</SelectBoxText>
         </IconTextContainer>
-        <CheckIcon />
-      </SelectListBox>
-      <CardNumberBox placeholder="카드 번호 (ex.0000 0000 0000 0000)" />
-      <BoxContainer>
-        <DeadLineDate placeholder="만료일" />
-        <CvvNumber placeholder="CVV" />
-      </BoxContainer>
-      <PostCodeBox placeholder="우편 번호" />
-      <CountryBox placeholder="국가/지역" />
+      </SelectCardBox>
+      <SelectTossBox
+        selectmodal={selectModal.toString()}
+        onClick={() => {
+          handleSelectModal();
+          handleRotation();
+          setPaymentMethod('toss');
+        }}
+      >
+        <TossIcon src="https://static.toss-internal.com/ipd-tcs/toss_core/live/428a6ee6-a3b9-41eb-bf36-06e4c2568cc9" />
+        <TossText>토스</TossText>
+      </SelectTossBox>
+      {paymentMethod === 'card' && (
+        <>
+          <CardNumberBox placeholder="카드 번호 (ex.0000 0000 0000 0000)" />
+          <BoxContainer>
+            <DeadLineDate placeholder="만료일" />
+            <CvvNumber placeholder="CVV" />
+          </BoxContainer>
+          <PostCodeBox placeholder="우편 번호" />
+          <CountryBox placeholder="국가/지역" />
+        </>
+      )}
     </PaymentMethodContainer>
   );
-}
+};
 
 const PaymentMethodContainer = styled.div`
   position: relative;
@@ -82,6 +114,9 @@ const PaymentMethodHeader = styled.div`
 
 const PaymentMethodTitle = styled.div`
   font-size: 25px;
+  span {
+    color: #fa545c;
+  }
 `;
 
 const IconContainer = styled.div`
@@ -117,8 +152,8 @@ const SelectBox = styled.div`
 const IconTextContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-left: 15px;
+  gap: 10px;
+  margin-left: 10px;
 `;
 
 const CardIcon = styled(BsCreditCard2Back)`
@@ -127,7 +162,7 @@ const CardIcon = styled(BsCreditCard2Back)`
 `;
 
 const SelectBoxText = styled.div`
-  padding-top: 3px;
+  padding-top: 4px;
   color: rgba(0, 0, 0, 0.7);
 `;
 
@@ -143,15 +178,7 @@ const ArrowIcon = styled.div<{ rotation: number }>`
   }
 `;
 
-const CheckIcon = styled(RiCheckLine)`
-  font-size: 40px;
-  padding-right: 15px;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const SelectListBox = styled(SelectBox)<{ selectmodal: string }>`
+const SelectCardBox = styled(SelectBox)<{ selectmodal: string }>`
   position: absolute;
   top: ${({ selectmodal }) => (selectmodal === 'true' ? 120 : 105)}px;
   background-color: #f2f2f2;
@@ -160,6 +187,24 @@ const SelectListBox = styled(SelectBox)<{ selectmodal: string }>`
   &:hover {
     cursor: pointer;
   }
+`;
+
+const SelectTossBox = styled(SelectCardBox)<{ selectmodal: string }>`
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 4px;
+  padding-bottom: 4px;
+  gap: 10px;
+  top: ${({ selectmodal }) => (selectmodal === 'true' ? 180 : 105)}px;
+`;
+
+const TossIcon = styled.img`
+  width: 80px;
+`;
+
+const TossText = styled.div`
+  padding-top: 7px;
+  color: rgba(0, 0, 0, 0.7);
 `;
 
 const CardNumberBox = styled.input`

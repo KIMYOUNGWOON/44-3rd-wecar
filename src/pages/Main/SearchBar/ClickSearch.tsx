@@ -5,7 +5,7 @@ import { IoSearch } from 'react-icons/io5';
 interface ClickSearchProps {
   handleSearchModal: (targeId: number) => void;
   regionValue: string;
-  passengerValue: string;
+  passengerValue: number;
   formattedStartDate: string;
   formattedEndDate: string;
   handleSearch: () => void;
@@ -30,9 +30,12 @@ const ClickSearch: React.FC<ClickSearchProps> = ({
       title: '반납일',
       subTitle: formattedEndDate,
     },
-    { id: 4, title: '승차정원', subTitle: passengerValue },
+    {
+      id: 4,
+      title: '탑승인원',
+      subTitle: passengerValue === 0 ? '인원 설정' : passengerValue + '명',
+    },
   ];
-
   return (
     <ClickSearchContainer>
       {CLICK_SEARCH.map(data => {
@@ -49,15 +52,13 @@ const ClickSearch: React.FC<ClickSearchProps> = ({
           </SearchBox>
         );
       })}
-      <SearchButtonBox>
+      <SearchButtonBox
+        onClick={() => {
+          handleSearch();
+        }}
+      >
         <SearchIcon />
-        <ButtonText
-          onClick={() => {
-            handleSearch();
-          }}
-        >
-          검색
-        </ButtonText>
+        <ButtonText>검색</ButtonText>
       </SearchButtonBox>
     </ClickSearchContainer>
   );

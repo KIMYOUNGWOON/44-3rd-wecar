@@ -32,6 +32,7 @@ const MenuModal: React.FC<MenuModalProps> = ({
               localStorage.removeItem('userName');
               setMenuModal(false);
               alert('로그아웃 되었습니다.');
+              window.document.body.style.overflowY = 'scroll';
             }}
           >
             로그아웃

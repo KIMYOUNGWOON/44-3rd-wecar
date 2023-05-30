@@ -39,10 +39,10 @@ function HostPage() {
   function handleFixed() {
     if (fixed.current) {
       const scrollTop = document.documentElement.scrollTop;
-      if (scrollTop > 520) {
+      if (scrollTop > 500) {
         fixed.current.style.position = 'absolute';
         fixed.current.style.top = '527px';
-      } else if (scrollTop < 520) {
+      } else if (scrollTop < 500) {
         fixed.current.style.top = '';
         fixed.current.style.position = 'fixed';
       }

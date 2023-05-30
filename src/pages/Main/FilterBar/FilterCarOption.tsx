@@ -1,7 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function FilterCarOption() {
+interface FilterCarOptionProps {
+  carOption: string[];
+  setCarOption: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const FilterCarOption: React.FC<FilterCarOptionProps> = ({
+  carOption,
+  setCarOption,
+}) => {
+  function handleCarOption(event: any) {
+    const { checked, value } = event.target;
+    if (checked) {
+      setCarOption([...carOption, value]);
+    } else {
+      const removeOption = carOption.filter(data => data !== value);
+      setCarOption(removeOption);
+    }
+  }
+
   return (
     <FilterCarOptionContainer>
       <FilterCarOptionTitle>차량 옵션</FilterCarOptionTitle>
@@ -9,7 +27,13 @@ function FilterCarOption() {
         {CAR_OPTION.map((data, i) => {
           return (
             <CarOptionList key={i}>
-              <CheckBoxInput name="carOption" type="checkbox" />
+              <CheckBoxInput
+                name="carOption"
+                type="checkbox"
+                value={data}
+                checked={carOption.includes(data)}
+                onChange={handleCarOption}
+              />
               <LabelTag>{data}</LabelTag>
             </CarOptionList>
           );
@@ -17,7 +41,7 @@ function FilterCarOption() {
       </CarOptionListContainer>
     </FilterCarOptionContainer>
   );
-}
+};
 
 const FilterCarOptionContainer = styled.div`
   padding: 40px;

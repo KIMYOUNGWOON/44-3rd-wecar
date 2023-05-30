@@ -5,6 +5,7 @@ import SearchModal from './SearchModal';
 import StaticSearch from './StaticSearch';
 import moment from 'moment';
 import carImg from '../../../assets/mainImg/carImage.png';
+import { useSearchParams } from 'react-router-dom';
 
 interface SearchBarProps {
   searchMode: boolean;
@@ -12,9 +13,6 @@ interface SearchBarProps {
   searchModal: boolean;
   setSearchModal: React.Dispatch<React.SetStateAction<boolean>>;
   tokenChecked: null | string;
-  searchParams: URLSearchParams;
-  setSearchParams: React.Dispatch<React.SetStateAction<URLSearchParams>>;
-  handleSearch: () => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -23,25 +21,25 @@ const SearchBar: React.FC<SearchBarProps> = ({
   searchModal,
   setSearchModal,
   tokenChecked,
-  searchParams,
-  setSearchParams,
-  handleSearch,
 }) => {
   const [modalChange, setModalChange] = useState('region');
   const [regionValue, setRegionValue] = useState('지역 검색');
-  const [passengerValue, setPassengerValue] = useState('인승 선택');
+  const [passengerValue, setPassengerValue] = useState(0);
   const [startDateValue, setStartDateValue] = useState<Date | string>(
     '날짜 추가'
   );
   const [endDateValue, setEndDateValue] = useState<Date | string>('날짜 추가');
+
   const formattedStartDate =
     startDateValue !== '날짜 추가'
-      ? moment(startDateValue).format('YY년 MM월 DD일')
+      ? moment(startDateValue).format('YYYY-MM-DD')
       : '날짜 추가';
   const formattedEndDate =
     endDateValue !== '날짜 추가'
-      ? moment(endDateValue).format('YY년 MM월 DD일')
+      ? moment(endDateValue).format('YYYY-MM-DD')
       : '날짜 추가';
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSearchMode = () => {
     setSearchMode(prevMode => !prevMode);
@@ -64,10 +62,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setRegionValue(region);
   }
 
-  function passengerValueChange(passenger: string) {
-    setPassengerValue(passenger);
-  }
-
   const handleStartDateChange = (date: any) => {
     setStartDateValue(date);
   };
@@ -76,9 +70,34 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setEndDateValue(date);
   };
 
-  const searchRegion = (region: any) => {
-    searchParams.append('address', region);
+  const handleSearch = () => {
+    if (regionValue !== '지역 검색') {
+      searchParams.set('address', regionValue);
+    } else {
+      searchParams.delete('address');
+    }
+
+    if (formattedStartDate !== '날짜 추가') {
+      searchParams.set('startDate', formattedStartDate);
+    } else {
+      searchParams.delete('startDate');
+    }
+
+    if (formattedEndDate !== '날짜 추가') {
+      searchParams.set('endDate', formattedEndDate);
+    } else {
+      searchParams.delete('endDate');
+    }
+
+    if (passengerValue !== 0) {
+      searchParams.set('minCapacity', passengerValue.toString());
+    } else {
+      searchParams.delete('minCapacity');
+    }
+
     setSearchParams(searchParams);
+    setSearchMode(false);
+    setSearchModal(false);
   };
 
   return (
@@ -87,12 +106,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <SearchModal
           modalChange={modalChange}
           regionValueChange={regionValueChange}
-          passengerValueChange={passengerValueChange}
           handleStartDateChange={handleStartDateChange}
           handleEndDateChange={handleEndDateChange}
+          regionValue={regionValue}
           startDateValue={startDateValue}
+          setStartDateValue={setStartDateValue}
           endDateValue={endDateValue}
-          searchRegion={searchRegion}
+          setEndDateValue={setEndDateValue}
+          passengerValue={passengerValue}
+          setPassengerValue={setPassengerValue}
         />
       )}
       {searchMode && (

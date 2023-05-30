@@ -1,24 +1,46 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BsFilterSquareFill } from 'react-icons/bs';
+import { TiThSmall } from 'react-icons/ti';
+import { useSearchParams } from 'react-router-dom';
 
 interface FilterBarProps {
   setFilterModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({ setFilterModal }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  function brandFiltering(brand: string) {
+    searchParams.set('brand', brand);
+    setSearchParams(searchParams);
+  }
+
   return (
     <FilterBarContainer>
       <BrandBoxContainer>
         {CAR_BRAND.map(data => {
           return (
-            <BrandBox key={data.id}>
+            <BrandBox
+              key={data.id}
+              onClick={() => {
+                brandFiltering(data.brandName);
+              }}
+            >
               <BrandLogo logoimg={data.brandImg} />
               <BrandName>{data.brandName}</BrandName>
             </BrandBox>
           );
         })}
       </BrandBoxContainer>
+      <ViewAllButtonBox
+        onClick={() => {
+          setSearchParams('');
+        }}
+      >
+        <ViewAllIcon />
+        <ViewAllText>모두 보기</ViewAllText>
+      </ViewAllButtonBox>
       <FilterButtonBox
         onClick={() => {
           setFilterModal(true);
@@ -90,6 +112,21 @@ const FilterIcon = styled(BsFilterSquareFill)`
 `;
 
 const FilterText = styled.div`
+  padding-top: 2px;
+  font-size: 15px;
+`;
+
+const ViewAllButtonBox = styled(FilterButtonBox)`
+  width: 110px;
+  margin-left: 390px;
+`;
+
+const ViewAllIcon = styled(TiThSmall)`
+  font-size: 23px;
+  color: #29b9ff;
+`;
+
+const ViewAllText = styled.div`
   padding-top: 2px;
   font-size: 15px;
 `;

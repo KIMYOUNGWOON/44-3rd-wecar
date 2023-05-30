@@ -1,15 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
-import hyeYoung from '../../assets/mainImg/혜영이.jpeg';
+import moment from 'moment';
 
-function RateDetails() {
+interface RateDetailsProps {
+  bookingData: any;
+}
+
+const RateDetails: React.FC<RateDetailsProps> = ({ bookingData }) => {
+  const startDateValue = moment(bookingData.startDate);
+  const endDateValue = moment(bookingData.endDate);
+  const diffDays = endDateValue
+    .startOf('day')
+    .diff(startDateValue.startOf('day'), 'days');
   return (
     <RateDetailsContainer>
       <RateDetailsHeader>
-        <HeaderImage hyeyoung={hyeYoung} />
+        {bookingData.hostCar && (
+          <HeaderImage carimage={bookingData.hostCar.files[0].url} />
+        )}
         <HeaderInfo>
-          <BrandName>이혜영</BrandName>
-          <ModelName>허버 보고싶네</ModelName>
+          {bookingData.hostCar && (
+            <BrandName>{bookingData.hostCar.carModel.brand.name}</BrandName>
+          )}
+          {bookingData.hostCar && (
+            <ModelName>{bookingData.hostCar.carModel.name}</ModelName>
+          )}
           <SideInfo>
             ★ 4.97 <span>(후기 252개)</span> • ⚑ <span>슈퍼호스트</span>
           </SideInfo>
@@ -17,16 +32,26 @@ function RateDetails() {
       </RateDetailsHeader>
       <RateDetailsTitle>요금 세부정보</RateDetailsTitle>
       <FlexBox>
-        <FlexStart>150,000원 ✕ 5일</FlexStart>
-        <FlexEnd>750,000원</FlexEnd>
+        {bookingData.hostCar && (
+          <FlexStart>
+            {bookingData.hostCar.pricePerDay.toLocaleString()}원 ✕ {diffDays}일
+          </FlexStart>
+        )}
+        {bookingData.hostCar && (
+          <FlexEnd>
+            {(bookingData.hostCar.pricePerDay * diffDays).toLocaleString()}원
+          </FlexEnd>
+        )}
       </FlexBox>
       <FlexBox>
         <FlexStart>위카 서비스 수수료</FlexStart>
-        <FlexEnd>20,000원</FlexEnd>
+        <FlexEnd>{bookingData.commission?.toLocaleString()}원</FlexEnd>
       </FlexBox>
       <TotalSumContainer>
         <TotalSumTitle>총 합계</TotalSumTitle>
-        <TotalSumValue>123,000원</TotalSumValue>
+        <TotalSumValue>
+          {bookingData.totalPrice?.toLocaleString()}원
+        </TotalSumValue>
       </TotalSumContainer>
       <Notice>
         해외에서 결제가 처리되기 때문에 카드 발행사에서 추가 수수료를 부과할 수
@@ -34,7 +59,7 @@ function RateDetails() {
       </Notice>
     </RateDetailsContainer>
   );
-}
+};
 
 const RateDetailsContainer = styled.div`
   position: fixed;
@@ -54,12 +79,12 @@ const RateDetailsHeader = styled.div`
   padding-bottom: 25px;
 `;
 
-const HeaderImage = styled.div<{ hyeyoung: string }>`
+const HeaderImage = styled.div<{ carimage: string }>`
   width: 120px;
   height: 120px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  background-image: ${({ hyeyoung }) => `url(${hyeyoung})`};
+  background-image: ${({ carimage }) => `url(${carimage})`};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -1,25 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 interface RegionSearchProps {
+  regionValue: string;
   regionValueChange: (region: string) => void;
-  searchRegion: (region: any) => void;
 }
 
 const RegionSearch: React.FC<RegionSearchProps> = ({
+  regionValue,
   regionValueChange,
-  searchRegion,
 }) => {
-  const [currentId, setCurrentId] = useState(0);
-
-  function handleClick(targetId: number): void {
-    if (currentId === targetId) {
-      setCurrentId(0);
-    } else {
-      setCurrentId(targetId);
-    }
-  }
-
   return (
     <RegionSearchContainer>
       <RegionSearchTitle>지역으로 검색</RegionSearchTitle>
@@ -29,11 +19,9 @@ const RegionSearch: React.FC<RegionSearchProps> = ({
           return (
             <RegionBox
               key={data.id}
-              ischecked={(currentId === data.id).toString()}
+              ischecked={(regionValue === data.region).toString()}
               onClick={() => {
-                handleClick(data.id);
-                searchRegion(data.region);
-                if (currentId === data.id) {
+                if (regionValue === data.region) {
                   regionValueChange('지역 검색');
                 } else {
                   regionValueChange(data.region);

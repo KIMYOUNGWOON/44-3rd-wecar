@@ -1,49 +1,65 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { BsPeopleFill } from 'react-icons/bs';
 
 interface PassengerSearchProps {
-  passengerValueChange: (passenger: string) => void;
+  passengerValue: number;
+  setPassengerValue: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const PassengerSearch: React.FC<PassengerSearchProps> = ({
-  passengerValueChange,
+  passengerValue,
+  setPassengerValue,
 }) => {
-  const [currentId, setCurrentId] = useState(0);
-
-  function handleClick(targetId: number): void {
-    setCurrentId(targetId);
+  function handleCount(type: string) {
+    if (type === 'minus' && passengerValue > 0) {
+      setPassengerValue(prev => prev - 1);
+    } else if (type === 'plus') {
+      setPassengerValue(prev => prev + 1);
+    }
   }
 
   return (
     <PassengerSearchContainer>
-      <PassengerSearchTitle>승차정원 검색</PassengerSearchTitle>
+      <PassengerSearchTitle>탑승인원 설정</PassengerSearchTitle>
       <PassengerSearchSubTitle>
-        승차 인원에 맞는 인승을 선택해주세요
+        탑승인원에 맞는 차량을 찾아보세요
       </PassengerSearchSubTitle>
-      {/* <PassengerNumber type="number" /> */}
-      <PassengerChoiceContainer>
-        {PASSENGER_DATA.map(data => {
-          return (
-            <PassengerBox
-              key={data.id}
-              ischecked={(currentId === data.id).toString()}
-              onClick={() => {
-                handleClick(data.id);
-                passengerValueChange(data.passenger);
-              }}
-            >
-              {data.passenger}
-            </PassengerBox>
-          );
-        })}
-      </PassengerChoiceContainer>
+      <BoardPeopleSettingBox>
+        <BoardPeopleIBox>
+          <FlexStart>
+            <BoardPeopleIcon />
+            <TotalPeople>총 인원</TotalPeople>
+          </FlexStart>
+          <BoardPeopleNumber>
+            <AmountNumber>{passengerValue}</AmountNumber>
+            <AmountText>명</AmountText>
+          </BoardPeopleNumber>
+        </BoardPeopleIBox>
+        <ButtonContainer>
+          <MinusButton
+            onClick={() => {
+              handleCount('minus');
+            }}
+          >
+            -
+          </MinusButton>
+          <PlusButton
+            onClick={() => {
+              handleCount('plus');
+            }}
+          >
+            +
+          </PlusButton>
+        </ButtonContainer>
+      </BoardPeopleSettingBox>
     </PassengerSearchContainer>
   );
 };
 
 const PassengerSearchContainer = styled.div`
   width: 300px;
-  height: 300px;
+  height: 230px;
   padding: 30px 30px;
 `;
 
@@ -58,38 +74,71 @@ const PassengerSearchSubTitle = styled.div`
   color: #29b9ff;
 `;
 
-const PassengerNumber = styled.input`
-  font-size: 14px;
-  margin-bottom: 40px;
-  color: #29b9ff;
-`;
+const BoardPeopleSettingBox = styled.div``;
 
-const PassengerChoiceContainer = styled.div`
+const BoardPeopleIBox = styled.div`
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 30px 30px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
-const PassengerBox = styled.div<{ ischecked: string }>`
-  padding: 20px 20px;
-  ${({ ischecked }) =>
-    ischecked === 'true'
-      ? 'border: 2px solid #29b9ff'
-      : 'border: 1px solid #eeeeee'};
-  border-radius: 10px;
-  font-size: 15px;
-  text-align: center;
+const FlexStart = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 
+const BoardPeopleIcon = styled(BsPeopleFill)`
+  font-size: 22px;
+`;
+
+const TotalPeople = styled.div`
+  padding-top: 5px;
+  font-size: 18px;
+`;
+
+const BoardPeopleNumber = styled.div`
+  display: flex;
+  font-size: 18px;
+  gap: 5px;
+`;
+
+const AmountNumber = styled.div`
+  padding-top: 6px;
+  font-size: 25px;
+  font-weight: 600;
+`;
+
+const AmountText = styled.div`
+  padding-top: 10px;
+  font-size: 18px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+`;
+
+const MinusButton = styled.div`
+  width: 30px;
+  height: 30px;
+  padding-top: 9px;
+  border-radius: 5px;
+  background-color: #29b9ff;
+  color: #ffffff;
+  font-size: 17px;
+  text-align: center;
   &:hover {
     cursor: pointer;
   }
 `;
-const PASSENGER_DATA = [
-  { id: 1, passenger: '4인승' },
-  { id: 2, passenger: '5인승' },
-  { id: 3, passenger: '7인승' },
-  { id: 4, passenger: '9인승' },
-];
+
+const PlusButton = styled(MinusButton)``;
 
 export default PassengerSearch;

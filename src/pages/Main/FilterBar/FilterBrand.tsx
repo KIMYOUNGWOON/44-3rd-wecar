@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { CAR_BRAND } from './FilterBar';
 
-function FilterBrand() {
-  const [currentId, setCurrentId] = useState(0);
+interface FilterBrandProps {
+  brandValue: string;
+  setBrandValue: React.Dispatch<React.SetStateAction<string>>;
+}
 
-  function checkItOut(targetId: number) {
-    if (currentId === targetId) {
-      setCurrentId(0);
+const FilterBrand: React.FC<FilterBrandProps> = ({
+  brandValue,
+  setBrandValue,
+}) => {
+  function handleBrand(brand: string) {
+    if (brandValue === brand) {
+      setBrandValue('');
     } else {
-      setCurrentId(targetId);
+      setBrandValue(brand);
     }
   }
 
@@ -21,9 +27,9 @@ function FilterBrand() {
           return (
             <CarBrandList
               key={data.id}
-              clicked={(currentId === data.id).toString()}
+              clicked={(brandValue === data.brandName).toString()}
               onClick={() => {
-                checkItOut(data.id);
+                handleBrand(data.brandName);
               }}
             >
               <BrandImage logoimage={data.brandImg} />
@@ -34,7 +40,7 @@ function FilterBrand() {
       </BrandContainer>
     </FilterBrandContainer>
   );
-}
+};
 
 const FilterBrandContainer = styled.div`
   padding: 40px;

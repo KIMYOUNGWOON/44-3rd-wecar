@@ -7,14 +7,18 @@ interface DateSearchProps {
   handleStartDateChange: (date: any) => void;
   handleEndDateChange: (date: any) => void;
   startDateValue: Date | string;
+  setStartDateValue: React.Dispatch<React.SetStateAction<string | Date>>;
   endDateValue: Date | string;
+  setEndDateValue: React.Dispatch<React.SetStateAction<string | Date>>;
 }
 
 const DateSearch: React.FC<DateSearchProps> = ({
   handleStartDateChange,
   handleEndDateChange,
   startDateValue,
+  setStartDateValue,
   endDateValue,
+  setEndDateValue,
 }) => {
   return (
     <DateSearchContainer>
@@ -24,22 +28,22 @@ const DateSearch: React.FC<DateSearchProps> = ({
         <Calendar
           onChange={handleStartDateChange}
           value={startDateValue === '날짜 추가' ? null : startDateValue}
-          formatDay={(locale, date) =>
-            date.toLocaleString('en', { day: 'numeric' })
-          }
         />
         <Calendar
           onChange={handleEndDateChange}
           value={endDateValue === '날짜 추가' ? null : endDateValue}
-          formatDay={(locale, date) =>
-            date.toLocaleString('en', { day: 'numeric' })
-          }
         />
       </CalendarContainer>
-      <CalendarTitleContainer>
-        <CalendarTitle>탑승 날짜</CalendarTitle>
-        <CalendarTitle>반납 날짜</CalendarTitle>
-      </CalendarTitleContainer>
+      <ButtonContainer>
+        <ResetButton
+          onClick={() => {
+            setStartDateValue('날짜 추가');
+            setEndDateValue('날짜 추가');
+          }}
+        >
+          날짜 초기화
+        </ResetButton>
+      </ButtonContainer>
     </DateSearchContainer>
   );
 };
@@ -61,19 +65,35 @@ const DateSearchSubTitle = styled.div`
   color: #29b9ff;
 `;
 
-const CalendarTitleContainer = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-  padding: 0 135px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+  margin-right: 15px;
 `;
 
-const CalendarTitle = styled.div`
-  padding: 15px;
-  border-radius: 15px;
+const ResetButton = styled.div`
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 16px;
   background-color: #29b9ff;
-  font-size: 15px;
   color: #ffffff;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const CloseButton = styled.div`
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #29b9ff;
+  color: #ffffff;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const CalendarContainer = styled.div`
@@ -81,6 +101,7 @@ const CalendarContainer = styled.div`
   gap: 30px;
   .react-calendar {
     width: 380px;
+    height: 306px;
     max-width: 100%;
     background-color: #fff;
     color: #222;

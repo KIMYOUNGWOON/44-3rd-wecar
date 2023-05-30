@@ -3,10 +3,19 @@ import styled from 'styled-components';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-function PriceSlider() {
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(30000);
+interface PriceSliderProps {
+  minValue: number;
+  setMinValue: React.Dispatch<React.SetStateAction<number>>;
+  maxValue: number;
+  setMaxValue: React.Dispatch<React.SetStateAction<number>>;
+}
 
+const PriceSlider: React.FC<PriceSliderProps> = ({
+  minValue,
+  setMinValue,
+  maxValue,
+  setMaxValue,
+}) => {
   const handleSliderChange = (values: any) => {
     setMinValue(values[0]);
     setMaxValue(values[1]);
@@ -16,8 +25,8 @@ function PriceSlider() {
     <PriceSliderContainer>
       <Slider
         range
-        min={1000}
-        max={30000}
+        min={20000}
+        max={300000}
         value={[minValue, maxValue]}
         onChange={handleSliderChange}
         handleStyle={{
@@ -43,17 +52,17 @@ function PriceSlider() {
       <PriceValueContainer>
         <PriceMinValueContainer>
           <PriceMinValueText>최저</PriceMinValueText>
-          <PriceMinValue>₩ {minValue}</PriceMinValue>
+          <PriceMinValue>₩ {minValue.toLocaleString()}</PriceMinValue>
         </PriceMinValueContainer>
         <Hyphen />
         <PriceMaxValueContainer>
           <PriceMaxValueText>최고</PriceMaxValueText>
-          <PriceMaxValue>₩ {maxValue} +</PriceMaxValue>
+          <PriceMaxValue>₩ {maxValue.toLocaleString()} +</PriceMaxValue>
         </PriceMaxValueContainer>
       </PriceValueContainer>
     </PriceSliderContainer>
   );
-}
+};
 
 const PriceSliderContainer = styled.div`
   padding: 0 100px 40px;
