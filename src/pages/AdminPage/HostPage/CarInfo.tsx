@@ -73,7 +73,7 @@ const CarModelName = styled.div`
   margin-bottom: 40px;
   padding-bottom: 15px;
   padding-left: 2px;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   line-height: 17px;
   font-size: 14px;
   color: rgba(34, 34, 34, 0.8);
@@ -87,7 +87,7 @@ const CarNumberContainer = styled.div`
   width: 100%;
   height: 60px;
   margin-bottom: 40px;
-  border: 1px solid #ebebeb;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 `;
 
@@ -131,8 +131,8 @@ const PriceContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 25px 0;
-  border-top: 1px solid #ebebeb;
-  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   padding: 20px 0;
 `;
 

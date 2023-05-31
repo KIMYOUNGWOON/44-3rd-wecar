@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
 import carImage from '../../assets/mainImg/carImage.png';
 import PaymentMethod from './PaymentMethod';
@@ -7,8 +8,6 @@ import moment from 'moment';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import axios from 'axios';
 import { HOST_ADDRESS } from '../../HostAddress';
-import { useNavigate } from 'react-router';
-import { useParams } from 'react-router';
 
 interface BookingRequestProps {
   bookingData: any;

@@ -30,8 +30,8 @@ const CarOptionContainer = styled.div`
   flex-wrap: wrap;
   height: 260px;
   margin-bottom: 40px;
-  border-top: 1px solid #ebebeb;
-  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   padding: 20px 0;
 `;
 

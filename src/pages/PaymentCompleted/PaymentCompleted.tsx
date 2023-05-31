@@ -58,11 +58,11 @@ function PaymentCompleted() {
             <FlexEnd>11111111-11111111</FlexEnd>
           </BookingNumber>
           <OrderUserName>
-            <FlexStart>예약자 성함</FlexStart>
+            <FlexStart>예약자</FlexStart>
             <FlexEnd>11111111-11111111</FlexEnd>
           </OrderUserName>
           <OrderUserPhoneNumber>
-            <FlexStart>예약자 연락처</FlexStart>
+            <FlexStart>연락처</FlexStart>
             <FlexEnd>11111111-11111111</FlexEnd>
           </OrderUserPhoneNumber>
           <BookingDate>

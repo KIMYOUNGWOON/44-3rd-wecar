@@ -33,8 +33,8 @@ const KeyInfoContainer = styled.div`
   width: 100%;
   margin-bottom: 40px;
   padding: 20px 0;
-  border-top: 1px solid #ebebeb;
-  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const Appearance = styled.div`
@@ -43,7 +43,7 @@ const Appearance = styled.div`
 
 const ReleaseDate = styled(Appearance)`
   padding: 0 12px;
-  border-left: 1px solid #ebebeb;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const Color = styled(ReleaseDate)``;
