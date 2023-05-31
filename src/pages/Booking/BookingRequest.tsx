@@ -29,15 +29,17 @@ const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
 
   const handlePayment = async () => {
     try {
-      const tossPayments = await loadTossPayments(clientKey);
+      await axios.post(`${HOST_ADDRESS}/payments`, {
+        bookingUuid: bookingData.uuid,
+        method: paymentMethod,
+      });
 
+      const tossPayments = await loadTossPayments(clientKey);
       const paymentOptions = {
         amount: bookingData.totalPrice, // 결제할 금액
         orderId: bookingData.uuid, // 상품 주문번호
         orderName: bookingData.hostCar.carModel.name,
         customerName: bookingData.user.name,
-        // successUrl: 'https://example.com/success', // 결제 성공 후 redirect할 URL
-        // failUrl: 'https://example.com/fail', // 결제 실패 시 redirect할 URL
       };
 
       const paymentResult = await tossPayments.requestPayment(
@@ -53,6 +55,7 @@ const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
         });
     } catch (error) {
       console.error(error);
+      alert('결제가 실패했습니다');
       // 결제 실패 처리 로직 작성
     }
   };

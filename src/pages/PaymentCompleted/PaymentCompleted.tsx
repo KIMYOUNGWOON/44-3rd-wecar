@@ -7,21 +7,28 @@ import { useParams } from 'react-router';
 import axios from 'axios';
 import { HOST_ADDRESS } from '../../HostAddress';
 import { BsCalendarCheck } from 'react-icons/bs';
+import moment from 'moment';
 
 function PaymentCompleted() {
-  const [bookingSuccees, setBookingSuccees] = useState({});
+  const [bookingSuccess, setBookingSuccess] = useState<any>({});
   const navigate = useNavigate();
   const Params = useParams();
   const { id } = Params;
+  function KoreanDateChange(date: Date | undefined) {
+    const dateObj = moment(date).utcOffset('12:00');
+    const koreanDate = dateObj.format('YYYY년 MM월 DD일');
+
+    return koreanDate;
+  }
 
   useEffect(() => {
     axios
       .get(`${HOST_ADDRESS}/bookings/${id}`)
-      .then(response => setBookingSuccees(response.data))
+      .then(response => setBookingSuccess(response.data))
       .catch(error => console.error(error));
   }, []);
 
-  console.log(bookingSuccees);
+  console.log(bookingSuccess);
 
   return (
     <PaymentCompletedContainer>
@@ -37,10 +44,18 @@ function PaymentCompleted() {
       </NavContainer>
       <BookingSuccessContainer>
         <HeaderContainer>
-          <CarImage />
+          {bookingSuccess.hostCar && (
+            <CarImage carimage={bookingSuccess.hostCar.files[0].url} />
+          )}
           <CarInfoContainer>
-            <BrandName>BMW</BrandName>
-            <ModelName>5시리즈 520d</ModelName>
+            {bookingSuccess.hostCar && (
+              <BrandName>
+                {bookingSuccess.hostCar.carModel.brand.name}
+              </BrandName>
+            )}
+            {bookingSuccess.hostCar && (
+              <ModelName> {bookingSuccess.hostCar.carModel.name}</ModelName>
+            )}
           </CarInfoContainer>
           <CheckIcon />
         </HeaderContainer>
@@ -55,23 +70,32 @@ function PaymentCompleted() {
           <DetailInfoTitle>예약 상세내역</DetailInfoTitle>
           <BookingNumber>
             <FlexStart>예약 번호</FlexStart>
-            <FlexEnd>11111111-11111111</FlexEnd>
+            <FlexEnd>{bookingSuccess?.uuid}</FlexEnd>
           </BookingNumber>
           <OrderUserName>
             <FlexStart>예약자</FlexStart>
-            <FlexEnd>11111111-11111111</FlexEnd>
+            {bookingSuccess.user && (
+              <FlexEnd>{bookingSuccess.user.name}</FlexEnd>
+            )}
           </OrderUserName>
           <OrderUserPhoneNumber>
             <FlexStart>연락처</FlexStart>
-            <FlexEnd>11111111-11111111</FlexEnd>
+            {bookingSuccess.user && (
+              <FlexEnd>{bookingSuccess.user.phoneNumber}</FlexEnd>
+            )}
           </OrderUserPhoneNumber>
           <BookingDate>
             <FlexStart>탑승 기간</FlexStart>
-            <FlexEnd>11111111-11111111</FlexEnd>
+            <FlexEnd>
+              {' '}
+              {KoreanDateChange(bookingSuccess.startDate) +
+                ' ~ ' +
+                KoreanDateChange(bookingSuccess.endDate)}
+            </FlexEnd>
           </BookingDate>
           <BookingPrice>
             <FlexStart>이용 요금</FlexStart>
-            <FlexEnd>11111111-11111111</FlexEnd>
+            <FlexEnd>{bookingSuccess?.totalPrice?.toLocaleString()}원</FlexEnd>
           </BookingPrice>
         </DetailInfoContainer>
       </BookingSuccessContainer>
@@ -117,16 +141,19 @@ const HeaderContainer = styled.div`
   padding-bottom: 30px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
-const CarImage = styled.div`
+const CarImage = styled.div<{ carimage: string }>`
   width: 120px;
   height: 120px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
+  background-image: ${({ carimage }) => `url(${carimage})`};
+  background-size: cover;
+  background-position: center;
 `;
 
 const CarInfoContainer = styled.div`
   padding-top: 6px;
-  padding-right: 130px;
+  padding-right: 105px;
 `;
 
 const BrandName = styled.div`
@@ -190,5 +217,4 @@ const OrderUserPhoneNumber = styled(BookingNumber)``;
 const BookingDate = styled(BookingNumber)``;
 
 const BookingPrice = styled(BookingNumber)``;
-
 export default PaymentCompleted;
