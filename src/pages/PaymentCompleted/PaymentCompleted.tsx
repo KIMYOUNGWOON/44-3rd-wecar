@@ -15,7 +15,7 @@ function PaymentCompleted() {
   const Params = useParams();
   const { id } = Params;
   function KoreanDateChange(date: Date | undefined) {
-    const dateObj = moment(date).utcOffset('12:00');
+    const dateObj = moment(date).utcOffset('');
     const koreanDate = dateObj.format('YYYY년 MM월 DD일');
 
     return koreanDate;
@@ -44,19 +44,21 @@ function PaymentCompleted() {
       </NavContainer>
       <BookingSuccessContainer>
         <HeaderContainer>
-          {bookingSuccess.hostCar && (
-            <CarImage carimage={bookingSuccess.hostCar.files[0].url} />
-          )}
-          <CarInfoContainer>
+          <DivBox>
             {bookingSuccess.hostCar && (
-              <BrandName>
-                {bookingSuccess.hostCar.carModel.brand.name}
-              </BrandName>
+              <CarImage carimage={bookingSuccess.hostCar.files[0].url} />
             )}
-            {bookingSuccess.hostCar && (
-              <ModelName> {bookingSuccess.hostCar.carModel.name}</ModelName>
-            )}
-          </CarInfoContainer>
+            <CarInfoContainer>
+              {bookingSuccess.hostCar && (
+                <BrandName>
+                  {bookingSuccess.hostCar.carModel.brand.name}
+                </BrandName>
+              )}
+              {bookingSuccess.hostCar && (
+                <ModelName> {bookingSuccess.hostCar.carModel.name}</ModelName>
+              )}
+            </CarInfoContainer>
+          </DivBox>
           <CheckIcon />
         </HeaderContainer>
         <BookingSuccessMessage>
@@ -87,7 +89,6 @@ function PaymentCompleted() {
           <BookingDate>
             <FlexStart>탑승 기간</FlexStart>
             <FlexEnd>
-              {' '}
               {KoreanDateChange(bookingSuccess.startDate) +
                 ' ~ ' +
                 KoreanDateChange(bookingSuccess.endDate)}
@@ -141,6 +142,12 @@ const HeaderContainer = styled.div`
   padding-bottom: 30px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
+
+const DivBox = styled.div`
+  display: flex;
+  gap: 15px;
+`;
+
 const CarImage = styled.div<{ carimage: string }>`
   width: 120px;
   height: 120px;
@@ -153,7 +160,7 @@ const CarImage = styled.div<{ carimage: string }>`
 
 const CarInfoContainer = styled.div`
   padding-top: 6px;
-  padding-right: 105px;
+  padding-right: 100px;
 `;
 
 const BrandName = styled.div`

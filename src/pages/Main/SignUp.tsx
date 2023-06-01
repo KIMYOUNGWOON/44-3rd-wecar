@@ -71,10 +71,12 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
           setUserModal(false);
           window.document.body.style.overflowY = 'scroll';
         }
-        console.log(response);
       })
       .catch(error => {
-        console.log(error);
+        if (error.response.status === 401) {
+          alert('입력값을 확인해주세요.');
+        }
+        console.error(error);
       });
   }
 

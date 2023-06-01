@@ -52,12 +52,16 @@ const BookingBox: React.FC<BookingBoxProps> = ({ carData }) => {
         totalPrice,
         commission,
       })
-      .then(response => console.log(response))
-      .then(() => {
-        navigate(`/booking/${id}`);
+      .then(response => {
+        navigate(`/booking/${response.data.uuid}`);
         window.scrollTo(0, 0);
       })
-      .catch(error => console.error(error));
+      .catch(error => {
+        const { message } = error.response.data;
+        if (message === 'User Not Found') {
+          alert('일반회원만 예약이 가능합니다');
+        }
+      });
   }
 
   return (

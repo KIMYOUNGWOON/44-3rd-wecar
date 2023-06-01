@@ -21,7 +21,7 @@ function ProductDetail() {
     });
   }, []);
 
-  console.log(carData);
+  console.log(carData.bookings);
 
   return (
     <>

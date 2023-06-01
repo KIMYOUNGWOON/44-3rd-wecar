@@ -9,7 +9,7 @@ interface HostCarInfoProps {
 
 const HostCarInfo: React.FC<HostCarInfoProps> = ({ carData }) => {
   function dateChange(date: Date) {
-    const dateObj = moment(date).utcOffset('-12:00');
+    const dateObj = moment(date).utcOffset('');
     const koreanDate = dateObj.format('YYYY년 MM월 DD일');
 
     return koreanDate;

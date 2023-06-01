@@ -23,8 +23,6 @@ function Booking() {
       .catch(error => console.error(error));
   }, []);
 
-  console.log(bookingData);
-
   return (
     <BookingContainer>
       <NavContainer>

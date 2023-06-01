@@ -11,7 +11,7 @@ const ProductList: React.FC<ProductListProps> = ({ carList }) => {
   const navigate = useNavigate();
 
   function dateChange(date: Date) {
-    const dateObj = moment(date).utcOffset('-12:00');
+    const dateObj = moment(date).utcOffset('');
     const koreanDate = dateObj.format('YY년 MM월 DD일');
 
     return koreanDate;
@@ -19,6 +19,9 @@ const ProductList: React.FC<ProductListProps> = ({ carList }) => {
 
   return (
     <ProductListContainer>
+      {carList.length === 0 && (
+        <CarListEmpty>해당 조건에 맞는 차량이 없습니다.</CarListEmpty>
+      )}
       {carList.map((data: any) => {
         return (
           <ProductContainer key={data.id}>
@@ -113,6 +116,13 @@ const AddressMark = styled.div`
   font-size: 13px;
   background-color: #29b9ff;
   color: #ffffff;
+`;
+
+const CarListEmpty = styled.div`
+  font-size: 25px;
+  grid-column: 1/7;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
 `;
 
 export default ProductList;

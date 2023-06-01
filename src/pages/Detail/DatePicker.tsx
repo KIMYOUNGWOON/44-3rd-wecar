@@ -27,10 +27,18 @@ const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const minStartDate = new Date(carData.startDate);
   const maxEndDate = new Date(carData.endDate);
-  const convertedStartDate = moment(minStartDate).utcOffset('-12:00');
-  const convertedEndDate = moment(maxEndDate).utcOffset('-12:00');
+  const convertedStartDate = moment(minStartDate).utcOffset('');
+  const convertedEndDate = moment(maxEndDate).utcOffset('');
   const koreanStartDate = convertedStartDate.format('YYYY-MM-DD');
   const koreanEndDate = convertedEndDate.format('YYYY-MM-DD');
+
+  const tileDisabled = ({ date }: { date: Date }) => {
+    return carData.bookings.some((disabledDate: any) => {
+      const start = new Date(disabledDate.startDate);
+      const end = new Date(disabledDate.endDate);
+      return date >= start && date <= end;
+    });
+  };
 
   return (
     <DatePickerContainer>
@@ -44,6 +52,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           value={startDate === '날짜 추가' ? null : startDate}
           minDate={new Date(koreanStartDate)}
           maxDate={new Date(koreanEndDate)}
+          tileDisabled={tileDisabled}
         />
         <Calendar
           onChange={handleEndDateChange}

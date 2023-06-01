@@ -26,12 +26,22 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // 정상 응답 처리
-    console.log(response);
-
     return response;
   },
   error => {
     console.log(error);
+    const { response } = error;
+    // if (response.data.message === 'jwt expired') {
+    //   const refreshToken = localStorage.getItem('refreshToken');
+    //   axios
+    //     .get(`${HOST_ADDRESS}/hosts/refresh`, {
+    //       headers: {
+    //         Authorization: `Bearer ${refreshToken}`,
+    //       },
+    //     })
+    //     .then(response => console.log(response))
+    //     .catch(error => console.log('리프레시', error.response));
+    // }
 
     return Promise.reject(error);
   }

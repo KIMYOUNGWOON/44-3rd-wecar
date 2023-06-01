@@ -24,6 +24,7 @@ const Main: React.FC = () => {
   const tokenChecked =
     localStorage.getItem('accessToken') || localStorage.getItem('refreshToken');
   const [carList, setCarList] = useState<any>([]);
+  const [totalAmount, setTotalAmount] = useState<number>(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const queryString = searchParams.toString();
 
@@ -42,10 +43,17 @@ const Main: React.FC = () => {
     axios
       .get(`${HOST_ADDRESS}/cars?${queryString}`)
       .then(response => {
-        setCarList(response.data);
+        setCarList(response.data.hostCars);
+        setTotalAmount(response.data.totalCount);
       })
       .catch(error => console.error(error));
   }, [queryString]);
+
+  const buttonCountArr = [];
+  const buttonCount = Math.floor(totalAmount / 12);
+  for (let i = 0; i < buttonCount + 1; i++) {
+    buttonCountArr.push(i + 1);
+  }
 
   return (
     <MainContainer>
@@ -110,6 +118,13 @@ const Main: React.FC = () => {
       <FilterModal filterModal={filterModal} setFilterModal={setFilterModal} />
       <FilterBar setFilterModal={setFilterModal} />
       <ProductList carList={carList} />
+      {carList.length !== 0 && (
+        <PagebuttonContainer>
+          {buttonCountArr.map(button => {
+            return <Pagebutton key={button}>{button}</Pagebutton>;
+          })}
+        </PagebuttonContainer>
+      )}
       <Footer />
     </MainContainer>
   );
@@ -146,6 +161,25 @@ const FilterBlackModal = styled(MenuBlackModal)`
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
   z-index: 1;
+`;
+
+const PagebuttonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const Pagebutton = styled.div`
+  width: 25px;
+  height: 25px;
+  padding-top: 6px;
+  border-radius: 4px;
+  background-color: #29b9ff;
+  font-size: 15px;
+  color: #ffffff;
+  text-align: center;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export default Main;

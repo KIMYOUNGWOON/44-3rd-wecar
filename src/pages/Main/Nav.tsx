@@ -51,7 +51,9 @@ const Nav: React.FC<NavProps> = ({
               axios
                 .get(`${HOST_ADDRESS}/auth/check/host`)
                 .then(response => {
-                  navigate('/seller');
+                  if (response.status === 200) {
+                    navigate('/seller');
+                  }
                 })
                 .catch(error => {
                   console.log(error);

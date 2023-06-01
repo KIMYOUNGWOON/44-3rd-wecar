@@ -18,8 +18,9 @@ const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
   const params = useParams();
   const { id } = params;
   const navigate = useNavigate();
+
   function KoreanDateChange(date: Date | undefined) {
-    const dateObj = moment(date).utcOffset('12:00');
+    const dateObj = moment(date).utcOffset('');
     const koreanDate = dateObj.format('YYYY년 MM월 DD일');
 
     return koreanDate;
@@ -36,8 +37,8 @@ const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
 
       const tossPayments = await loadTossPayments(clientKey);
       const paymentOptions = {
-        amount: bookingData.totalPrice, // 결제할 금액
-        orderId: bookingData.uuid, // 상품 주문번호
+        amount: bookingData.totalPrice,
+        orderId: bookingData.uuid,
         orderName: bookingData.hostCar.carModel.name,
         customerName: bookingData.user.name,
       };

@@ -120,15 +120,14 @@ const Registration: React.FC<RegistrationProps> = ({ setPageMode }) => {
           });
           setKeyInfoValue({
             ...keyInfoValue,
-            carType: data.carType.type,
-            carSize: data.engineSize.size,
+            carType: data.carType.name,
+            carSize: data.engineSize.name,
             capacity: `${data.capacity}인승`,
           });
         }
       })
       .catch(error => console.log(error));
   }
-
   function carUpload() {
     axios
       .post(`${HOST_ADDRESS}/cars/host`, {

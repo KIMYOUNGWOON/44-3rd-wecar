@@ -1,6 +1,8 @@
+import axios from 'axios';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import { HOST_ADDRESS } from '../../HostAddress';
 
 interface MenuModalProps {
   setMenuModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,8 +67,22 @@ const MenuModal: React.FC<MenuModalProps> = ({
       )}
       <CarSharing
         onClick={() => {
-          navigate('/seller');
-          window.document.body.style.overflowY = 'scroll';
+          if (tokenChecked) {
+            axios
+              .get(`${HOST_ADDRESS}/auth/check/host`)
+              .then(response => {
+                if (response.status === 200) {
+                  navigate('/seller');
+                  window.document.body.style.overflowY = 'scroll';
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                alert('공급회원 전용 페이지입니다.');
+              });
+          } else {
+            alert('공급회원 전용 페이지입니다.');
+          }
         }}
       >
         당신의 차를 <span>위카</span>하세요
