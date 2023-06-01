@@ -11,6 +11,7 @@ import PriceSlider from './PriceSlider';
 interface FilterModalProps {
   filterModal: boolean;
   setFilterModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setButtonId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const CAR_TYPE = [
@@ -23,6 +24,7 @@ export const CAR_TYPE = [
 const FilterModal: React.FC<FilterModalProps> = ({
   filterModal,
   setFilterModal,
+  setButtonId,
 }) => {
   const [carType, setCarType] = useState('');
   const [minValue, setMinValue] = useState(20000);
@@ -85,7 +87,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     } else {
       searchParams.delete('options');
     }
-
+    searchParams.delete('page');
     setSearchParams(searchParams);
   }
 
@@ -136,6 +138,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
         <FilterButton
           onClick={() => {
             handleFiltering();
+            setButtonId(1);
             setFilterModal(false);
             window.document.body.style.overflowY = 'scroll';
           }}

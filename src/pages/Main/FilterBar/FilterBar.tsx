@@ -6,13 +6,19 @@ import { useSearchParams } from 'react-router-dom';
 
 interface FilterBarProps {
   setFilterModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setButtonId: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({ setFilterModal }) => {
+const FilterBar: React.FC<FilterBarProps> = ({
+  setFilterModal,
+  setButtonId,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   function brandFiltering(brand: string) {
     searchParams.set('brand', brand);
+    searchParams.delete('page');
+    setButtonId(1);
     setSearchParams(searchParams);
   }
 
@@ -25,6 +31,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ setFilterModal }) => {
               key={data.id}
               onClick={() => {
                 brandFiltering(data.brandName);
+                searchParams.delete('page');
               }}
             >
               <BrandLogo logoimg={data.brandImg} />
@@ -36,6 +43,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ setFilterModal }) => {
       <ViewAllButtonBox
         onClick={() => {
           setSearchParams('');
+          setButtonId(1);
         }}
       >
         <ViewAllIcon />

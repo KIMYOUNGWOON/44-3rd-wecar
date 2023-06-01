@@ -13,7 +13,11 @@ import Nav from './Nav';
 import ProductList from './ProductList';
 import SignUp from './SignUp';
 
-const Main: React.FC = () => {
+interface MainProps {
+  setLoginStatus: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Main: React.FC<MainProps> = ({ setLoginStatus }) => {
   const [menuModal, setMenuModal] = useState<boolean>(false);
   const [userModal, setUserModal] = useState<boolean>(false);
   const [successModal, setSuccessModal] = useState<boolean>(false);
@@ -26,6 +30,8 @@ const Main: React.FC = () => {
   const [carList, setCarList] = useState<any>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [buttonId, setButtonId] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const queryString = searchParams.toString();
 
   useEffect(() => {
@@ -45,6 +51,7 @@ const Main: React.FC = () => {
       .then(response => {
         setCarList(response.data.hostCars);
         setTotalAmount(response.data.totalCount);
+        setIsLoading(false);
       })
       .catch(error => console.error(error));
   }, [queryString]);
@@ -54,7 +61,6 @@ const Main: React.FC = () => {
   for (let i = 0; i < buttonCount + 1; i++) {
     buttonCountArr.push(i + 1);
   }
-
   return (
     <MainContainer>
       <Nav
@@ -64,6 +70,7 @@ const Main: React.FC = () => {
         searchModal={searchModal}
         setSearchModal={setSearchModal}
         tokenChecked={tokenChecked}
+        setButtonId={setButtonId}
       />
       {menuModal && (
         <MenuBlackModal
@@ -94,6 +101,7 @@ const Main: React.FC = () => {
           <Login
             setUserModal={setUserModal}
             setSuccessModal={setSuccessModal}
+            setLoginStatus={setLoginStatus}
           />
         ) : (
           <SignUp setUserModal={setUserModal} />
@@ -115,15 +123,32 @@ const Main: React.FC = () => {
           }}
         />
       )}
-      <FilterModal filterModal={filterModal} setFilterModal={setFilterModal} />
-      <FilterBar setFilterModal={setFilterModal} />
-      <ProductList carList={carList} />
+      <FilterModal
+        filterModal={filterModal}
+        setFilterModal={setFilterModal}
+        setButtonId={setButtonId}
+      />
+      <FilterBar setFilterModal={setFilterModal} setButtonId={setButtonId} />
+      <ProductList carList={carList} isLoading={isLoading} />
       {carList.length !== 0 && (
-        <PagebuttonContainer>
+        <PageButtonContainer>
           {buttonCountArr.map(button => {
-            return <Pagebutton key={button}>{button}</Pagebutton>;
+            return (
+              <Pagebutton
+                key={button}
+                checked={buttonId === button}
+                onClick={() => {
+                  searchParams.set('page', button.toString());
+                  setSearchParams(searchParams);
+                  setButtonId(button);
+                  window.scrollTo(0, 0);
+                }}
+              >
+                {button}
+              </Pagebutton>
+            );
           })}
-        </PagebuttonContainer>
+        </PageButtonContainer>
       )}
       <Footer />
     </MainContainer>
@@ -163,17 +188,19 @@ const FilterBlackModal = styled(MenuBlackModal)`
   z-index: 1;
 `;
 
-const PagebuttonContainer = styled.div`
+const PageButtonContainer = styled.div`
   display: flex;
   justify-content: center;
+  gap: 15px;
 `;
 
-const Pagebutton = styled.div`
+const Pagebutton = styled.div<{ checked: boolean }>`
   width: 25px;
   height: 25px;
   padding-top: 6px;
   border-radius: 4px;
-  background-color: #29b9ff;
+  background-color: ${({ checked }) =>
+    checked ? '#29b9ff' : 'rgba(0,0,0,0.2)'};
   font-size: 15px;
   color: #ffffff;
   text-align: center;

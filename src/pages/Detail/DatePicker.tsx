@@ -36,7 +36,23 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return carData.bookings.some((disabledDate: any) => {
       const start = new Date(disabledDate.startDate);
       const end = new Date(disabledDate.endDate);
-      return date >= start && date <= end;
+      const startDateMinTime = new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate(),
+        0,
+        0,
+        0
+      );
+      const endDateMaxTime = new Date(
+        end.getFullYear(),
+        end.getMonth(),
+        end.getDate(),
+        23,
+        59,
+        59
+      );
+      return date >= startDateMinTime && date <= endDateMaxTime;
     });
   };
 

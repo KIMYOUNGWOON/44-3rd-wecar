@@ -94,7 +94,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     } else {
       searchParams.delete('minCapacity');
     }
-
+    searchParams.delete('page');
     setSearchParams(searchParams);
     setSearchMode(false);
     setSearchModal(false);

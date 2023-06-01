@@ -73,7 +73,9 @@ const SignUp: React.FC<SignUpProps> = ({ setUserModal }) => {
         }
       })
       .catch(error => {
-        if (error.response.status === 401) {
+        if (error.response.data.message === 'Duplicate Email or Phone Number') {
+          alert('이미 등록된 이메일이나 휴대폰 번호입니다.');
+        } else if (error.response.status === 401) {
           alert('입력값을 확인해주세요.');
         }
         console.error(error);

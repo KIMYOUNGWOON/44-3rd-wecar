@@ -11,11 +11,16 @@ import { HOST_ADDRESS } from '../../HostAddress';
 interface LoginProps {
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
   setSuccessModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoginStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const loginValueObj = { email: '', password: '', userType: 'general' };
 
-const Login: React.FC<LoginProps> = ({ setUserModal, setSuccessModal }) => {
+const Login: React.FC<LoginProps> = ({
+  setUserModal,
+  setSuccessModal,
+  setLoginStatus,
+}) => {
   const [loginValue, setLoginValue] = useState(loginValueObj);
   const { email, password } = loginValue;
   const isValid = email.includes('@') && password.length >= 6;
@@ -42,6 +47,7 @@ const Login: React.FC<LoginProps> = ({ setUserModal, setSuccessModal }) => {
           localStorage.setItem('refreshToken', newRefreshToken);
           setUserModal(false);
           setSuccessModal(true);
+          setLoginStatus(true);
         }
       })
       .then(() => {

@@ -2,9 +2,11 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { HOST_ADDRESS } from '../../../HostAddress';
+import moment from 'moment';
 
 function BookingHistory() {
-  const [bookingList, setBookingList] = useState([]);
+  const [bookingList, setBookingList] = useState<any[]>([]);
+
   useEffect(() => {
     axios
       .get(`${HOST_ADDRESS}/bookings/list`)
@@ -12,7 +14,12 @@ function BookingHistory() {
       .catch(error => console.error(error));
   }, []);
 
-  console.log(bookingList);
+  function dateChange(date: Date) {
+    const dateObj = moment(date).utcOffset('');
+    const koreanDate = dateObj.format('YY년 MM월 DD일');
+    return koreanDate;
+  }
+
   return (
     <>
       <BookingHistoryTitle>예약 내역</BookingHistoryTitle>
@@ -32,7 +39,9 @@ function BookingHistory() {
                 <BookingNumber>{data.uuid}</BookingNumber>
                 <BookingUser>{data.user.name}</BookingUser>
                 <PhoneNumber>{data.user.phoneNumber}</PhoneNumber>
-                <BookingDate>2023년 05월 25일 ~ 2023년 06월 25일</BookingDate>
+                <BookingDate>
+                  {dateChange(data.startDate)} ~ {dateChange(data.endDate)}
+                </BookingDate>
                 <BookingPrice>
                   {data.totalPrice.toLocaleString()}원
                 </BookingPrice>

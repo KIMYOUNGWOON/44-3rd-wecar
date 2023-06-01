@@ -2,26 +2,30 @@ import React from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import loadingGif from '../../assets/mainImg/loading.gif';
 
 interface ProductListProps {
   carList: any;
+  isLoading: boolean;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ carList }) => {
+const ProductList: React.FC<ProductListProps> = ({ carList, isLoading }) => {
   const navigate = useNavigate();
 
   function dateChange(date: Date) {
     const dateObj = moment(date).utcOffset('');
     const koreanDate = dateObj.format('YY년 MM월 DD일');
-
     return koreanDate;
   }
 
   return (
     <ProductListContainer>
-      {carList.length === 0 && (
-        <CarListEmpty>해당 조건에 맞는 차량이 없습니다.</CarListEmpty>
-      )}
+      {carList.length === 0 &&
+        (isLoading ? (
+          <LoadingBox src={loadingGif} />
+        ) : (
+          <CarListEmpty>해당 조건에 맞는 차량이 없습니다.</CarListEmpty>
+        ))}
       {carList.map((data: any) => {
         return (
           <ProductContainer key={data.id}>
@@ -41,7 +45,7 @@ const ProductList: React.FC<ProductListProps> = ({ carList }) => {
               <ShareTerm>
                 {dateChange(data.startDate) + ' ~ ' + dateChange(data.endDate)}
               </ShareTerm>
-              <AddressMark>{data.address.slice(6, 9)}</AddressMark>
+              <AddressMark>{data.address.slice(6, 8)}</AddressMark>
             </ProductInfo>
           </ProductContainer>
         );
@@ -55,6 +59,7 @@ const ProductListContainer = styled.div`
   grid-template-columns: repeat(6, 1fr);
   gap: 50px 40px;
   width: 100%;
+  height: 870px;
   padding: 50px 80px;
 `;
 
@@ -119,10 +124,18 @@ const AddressMark = styled.div`
 `;
 
 const CarListEmpty = styled.div`
+  margin-top: 250px;
   font-size: 25px;
   grid-column: 1/7;
   text-align: center;
   color: rgba(0, 0, 0, 0.5);
+`;
+
+const LoadingBox = styled.img`
+  grid-column: 1/7;
+  margin: 180px auto;
+  width: 170px;
+  text-align: center;
 `;
 
 export default ProductList;

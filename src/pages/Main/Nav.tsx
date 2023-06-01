@@ -14,6 +14,7 @@ interface NavProps {
   searchModal: boolean;
   setSearchModal: React.Dispatch<React.SetStateAction<boolean>>;
   tokenChecked: null | string;
+  setButtonId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Nav: React.FC<NavProps> = ({
@@ -23,6 +24,7 @@ const Nav: React.FC<NavProps> = ({
   searchModal,
   setSearchModal,
   tokenChecked,
+  setButtonId,
 }) => {
   const navigate = useNavigate();
   const userName = localStorage.getItem('userName');
@@ -34,6 +36,7 @@ const Nav: React.FC<NavProps> = ({
         alt="로고이미지"
         onClick={() => {
           navigate('/');
+          setButtonId(1);
           window.scrollTo(0, 0);
         }}
       />

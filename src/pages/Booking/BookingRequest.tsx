@@ -53,6 +53,7 @@ const BookingRequest: React.FC<BookingRequestProps> = ({ bookingData }) => {
         .then(response => console.log(response))
         .then(() => {
           navigate(`/success/${id}`);
+          window.scrollTo(0, 0);
         });
     } catch (error) {
       console.error(error);
