@@ -23,25 +23,22 @@
 
 ## 📍사용 기술
 
-* FrontEnd
-• React
-• TypeScript
-• Prettier
-• eslint
-• styled-component
-
-
-</div>
-
-* 협업 <br>
-<div style="display: flex; align-items: flex-start;">
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/trello-0055cc?style=for-the-badge&logo=trello&logoColor=yellow">
-<img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=Slack&logoColor=wihte">
-<img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
-<br>
+* **Backend** <br>
+TypeScript <br>
+React <br>
+styled-component<br>
+Prettier <br>
+eslint <br>
+AWS s3 <br>
 <br>
 
+* **협업** <br>
+Git & Git hub <br>
+Trello <br>
+Postman <br>
+Slack <br>
+Notion <br>
+<br>
 
 
  ## 구현 페이지 및 기능
