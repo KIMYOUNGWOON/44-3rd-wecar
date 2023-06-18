@@ -2,9 +2,9 @@
 
 <br>
 
-• 위코드 44기 2차 프로젝트
+• 위코드 44기 3차 기업협업 프로젝트
 <br>
-한정판 리셀 거래 중개 플랫폼 KREAM을 모델링하여 레고 리셀 거래 중개 플랫폼 웹서비스 개발<br>
+전세계 여행 및 숙박 관련 공간을 공유할 수 있는 온라인 커뮤니티 플랫폼 서비스인 에어비앤비를 모델링하여 전국 차량 공유 플랫폼 서비스인 WECAR를 개발하였습니다.<br>
 [결과물 시연 영상 링크](https://www.youtube.com/watch?v=UFuS91VcVp8)**
 
 > 짧은 프로젝트 기간동안 개발에 집중해야 하므로 디자인/기획 부분만 클론했습니다.<br>
@@ -13,23 +13,22 @@
 <br>
 
 ## 📍프로젝트 기간 & 인원
-* 프로젝트 기간: 2주 (2023.04.20 ~ 2023.05.04)   
-* 개발 인원:  
-  `Frontend`: 최선영(Product Manager), 김영운, 조건호 <br>
-  `Backend`: 박세익(Project Manager), 장다희, 김민서, 송석준 <br>
-* [백엔드 Github 저장소](https://github.com/wecode-bootcamp-korea/44-2nd-Dream-backend)
-* 모델링한 사이트: [KREAM](https://kream.co.kr/)
+* 프로젝트 기간: 3주 (2023.05.12 ~ 2023.06.02)
+* 개발 인원: Frontend 1명 / Backend 1명
+  `Frontend`: 김영운 <br>
+  `Backend`: 장다희 <br>
+* [백엔드 Github 저장소](https://github.com/walwald/WECAR)
+* 모델링한 사이트: [airbnb](https://www.airbnb.co.kr/)
 <br>
 
 ## 📍사용 기술
 
-* FrontEnd   
-
- |React|JavaScript|styledcomponents|Rest|Prettier|
-|---|---|---|---|---|
-|<div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/react-icon.svg" alt="icon" width="52" height="52" /></div>| <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/js-icon.svg" alt="icon" width="65" height="65" /></div>| <div style="display: flex; align-items: flex-start;"><img src="https://img.shields.io/badge/styledcomponents-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white"> </div>|<div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/restapi-icon.svg" alt="icon" width="65" height="65" /></div>|<div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/prettier-icon.svg" alt="icon" width="65" height="65" /></div>|<div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/docker-icon.svg" alt="icon" width="65" height="65" /></div>|<div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/aws-icon.svg" alt="icon" width="65" height="65" /></div>|
-<br>
-
+* FrontEnd
+• React
+• TypeScript
+• Prettier
+• eslint
+• styled-component
 
 
 </div>
@@ -44,19 +43,22 @@
 <br>
 
 
- ## 거래 플로우
- 
- <img width="500" alt="스크린샷 2023-05-07 오후 6 17 45" src="https://user-images.githubusercontent.com/121158293/236668841-92202a4a-31ab-4610-bf53-4c8b0d5229ca.png">
 
-
- ## 구현 페이지
+ ## 구현 페이지 및 기능
  
 
-### 1. 로그인
+### 1. 회원가입
   
-![Login](https://user-images.githubusercontent.com/126956430/246335675-b8b45999-a95a-4a93-932a-0790dcf0eca2.gif)
+![Sign Up](https://user-images.githubusercontent.com/126956430/246651264-2970799f-697d-433f-835c-ffaff97732ff.gif)
 
-- KaKao에서 제공하는 API를 활용하여 user 로그인 기능을 구현했습니다.
+- 회원 유형 : 일반회원 / 공급회원
+- 회원 정보 입력 : 일반회원 가입의 경우 추가 항목이 있습니다. (생년월일 / 운전자면허증 번호)
+  • 라디오 버튼 체크시 회원 유형에 따라 하나의 컴포넌트에서 다른 UI가 그려지도록 구현함
+- 비밀번호 확인 : 비밀번호 확인 입력란을 추가하여 실시간으로 비밀번호를 일치 여부를 확인할 수 있습니다.
+  • 비밀번호가 다르게 입력되면 하단에 빨간 글씨로 일치하지 않는 메시지 표시 / 비밀번호가 동일하게 입력되면 파란 글씨로 일치한다는 메시지 표시
+- 필수 개인 정보 수집 동의 : 필수 개인 정보 수집 동의 체크시에만 가입하기 버튼이 활성화됩니다.
+
+위와 같이 차량 공유 서비스의 회원가입을 일반회원과 공급회원으로 구분하여 처리합니다.
   
 <br>
   
